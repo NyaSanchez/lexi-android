@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Lexi</string>
+    <string name="welcome_title">Una palabra al día.\nUn nuevo aprendizaje.</string>
+    <string name="welcome_description">Practica vocabulario en español e inglés.</string>
+</resources>

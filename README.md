@@ -4,7 +4,9 @@ Aplicación nativa para Android que permite practicar vocabulario y escritura en
 
 ## Estado actual
 
-Etapa inicial: documentación de la idea y preparación del control de versiones. Todavía no existe una aplicación ejecutable ni se ha generado el proyecto de Android Studio.
+Proyecto Android inicial con Kotlin y Jetpack Compose. Incluye una pantalla de bienvenida, recursos de texto, un icono provisional y una base de tema claro y oscuro.
+
+Los modos de práctica, el tablero, la navegación y el guardado de progreso se implementarán en los siguientes avances.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
@@ -23,12 +25,25 @@ El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su 
 - Kotlin y Jetpack Compose para la aplicación nativa.
 - Git, GitHub y GitHub Desktop para el control de versiones.
 
-La persistencia y las dependencias se concretarán al implementar cada etapa. Las versiones de las herramientas se registrarán cuando se genere el proyecto.
+Configuración de esta primera versión:
+
+| Elemento | Versión o valor |
+| --- | --- |
+| Android Gradle Plugin | 9.3.3 |
+| Gradle Wrapper | 9.5.1 |
+| Kotlin y compilador de Compose | 2.4.20 |
+| Compose BOM | 2026.06.01 |
+| Android mínimo | Android 8.0, API 26 |
+| compileSdk / targetSdk | 36 / 36 |
+| Identificador de la app | `io.github.nyasanchez.lexi` |
+
+AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle/libs.versions.toml`. La persistencia se concretará al implementar el progreso.
 
 ## Documentación
 
 - [Reglas y alcance](docs/REQUISITOS.md): requisitos extraídos del PDF de referencia y decisiones pendientes.
 - [Plan y rutina de commits](docs/COMMITS.md): avances previstos, validación y mensajes de ejemplo.
+- [Primer arranque](docs/PRIMER_ARRANQUE.md): apertura en Android Studio, ejecución y commit del proyecto inicial.
 
 ## Referencia de diseño
 
@@ -40,4 +55,39 @@ Cada avance funcional o documental se guardará en un commit descriptivo y se en
 
 ## Ejecución
 
-Pendiente de crear el proyecto en Android Studio. Esta sección se actualizará con los pasos de compilación y ejecución cuando exista el primer proyecto ejecutable.
+1. En Android Studio, seleccionar **Open** y abrir la carpeta raíz `lexi-android`, la que contiene `settings.gradle.kts`.
+2. Usar el JDK integrado de Android Studio como Gradle JDK y tener instalado Android SDK Platform 36.
+3. Esperar a que termine la sincronización de Gradle.
+4. Elegir un emulador o dispositivo Android con API 26 o superior, seleccionar la configuración `app` y pulsar **Run**.
+5. Comprobar que aparece Lexi con el mensaje «Una palabra al día. Un nuevo aprendizaje.».
+
+Desde PowerShell en la raíz, con `JAVA_HOME` apuntando a un JDK compatible con Gradle 9.5.1 (se recomienda el JDK integrado de Android Studio instalado):
+
+```powershell
+.\gradlew.bat :app:assembleDebug :app:lintDebug
+```
+
+`local.properties` contiene la ruta al SDK de cada computadora y está excluido de Git. Android Studio puede crearlo al configurar el proyecto. La primera sincronización necesita acceso a Internet para descargar las herramientas y dependencias que falten.
+
+## Estructura inicial
+
+```text
+app/
+  build.gradle.kts
+  src/main/
+    AndroidManifest.xml
+    java/io/github/nyasanchez/lexi/
+      MainActivity.kt
+      ui/LexiApp.kt
+      ui/theme/Theme.kt
+    res/
+docs/
+gradle/
+  libs.versions.toml
+  wrapper/
+gradlew
+gradlew.bat
+settings.gradle.kts
+```
+
+`MainActivity` abre la interfaz; `LexiApp` contiene la bienvenida; `Theme` define los colores. Los textos están en `res/values/strings.xml`.
