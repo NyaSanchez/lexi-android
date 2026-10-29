@@ -1,5 +1,7 @@
 # Inicio y navegación
 
+Este documento conserva el registro de la etapa de interfaz. El siguiente avance añade el [banco de vocabulario](VOCABULARIO_INICIAL.md), cuya conexión con la partida sigue pendiente.
+
 ## Alcance del avance
 
 - Inicio con la identidad violeta de Lexi, una tarjeta de meta diaria y selección mediante dos opciones de radio.
