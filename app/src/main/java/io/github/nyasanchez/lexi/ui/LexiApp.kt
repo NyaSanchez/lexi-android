@@ -1,71 +1,126 @@
 package io.github.nyasanchez.lexi.ui
 
-import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import io.github.nyasanchez.lexi.R
-import io.github.nyasanchez.lexi.ui.theme.LexiTheme
+
+private enum class MainDestination(
+    val route: String,
+    @param:StringRes val label: Int,
+    @param:DrawableRes val icon: Int,
+) {
+    HOME("home", R.string.nav_home, R.drawable.ic_home),
+    REVIEW("review", R.string.nav_review, R.drawable.ic_book),
+    PROGRESS("progress", R.string.nav_progress, R.drawable.ic_progress),
+}
 
 @Composable
 fun LexiApp() {
-    Scaffold { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 48.dp),
-            contentAlignment = Alignment.Center,
+    val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route ?: MainDestination.HOME.route
+    var selectedModeId by rememberSaveable { mutableStateOf(PracticeMode.ENGLISH.id) }
+    val selectedMode = PracticeMode.fromId(selectedModeId)
+
+    fun goHome() {
+        navController.popBackStack(MainDestination.HOME.route, inclusive = false)
+    }
+
+    Scaffold(
+        bottomBar = {
+            if (MainDestination.entries.any { it.route == currentRoute }) {
+                Column {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 0.dp,
+                    ) {
+                        MainDestination.entries.forEach { destination ->
+                            NavigationBarItem(
+                                selected = currentRoute == destination.route,
+                                onClick = {
+                                    navController.navigate(destination.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                icon = { Icon(painterResource(destination.icon), contentDescription = null) },
+                                label = { Text(stringResource(destination.label)) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
+                            )
+                        }
+                    }
+                }
+            }
+        },
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = MainDestination.HOME.route,
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
         ) {
-            Column(
-                modifier = Modifier.widthIn(max = 480.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
+            composable(MainDestination.HOME.route) {
+                HomeScreen(
+                    selectedMode = selectedMode,
+                    onModeSelected = { selectedModeId = it.id },
+                    onStart = {
+                        navController.navigate("practice/${selectedMode.id}") {
+                            launchSingleTop = true
+                        }
+                    },
                 )
-                Text(
-                    text = stringResource(R.string.welcome_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = stringResource(R.string.welcome_description),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
+            }
+            composable(MainDestination.REVIEW.route) {
+                ReviewScreen(onGoHome = ::goHome)
+            }
+            composable(MainDestination.PROGRESS.route) {
+                ProgressScreen(onGoHome = ::goHome)
+            }
+            composable(
+                route = "practice/{mode}",
+                arguments = listOf(navArgument("mode") { type = NavType.StringType }),
+            ) { entry ->
+                PracticeEmptyScreen(
+                    mode = PracticeMode.fromId(entry.arguments?.getString("mode")),
+                    onGoBack = { navController.popBackStack() },
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true, name = "Lexi - claro")
-@Preview(showBackground = true, name = "Lexi - oscuro", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun LexiAppPreview() {
-    LexiTheme {
-        LexiApp()
     }
 }

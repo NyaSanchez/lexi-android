@@ -1,5 +1,7 @@
 # Primer arranque y commit del proyecto Android
 
+Esta guía conserva el registro del primer proyecto ejecutable. La bienvenida de ese commit ya fue sustituida por Inicio; para comprobar la interfaz actual, consultar [Inicio y navegación](INICIO_NAVEGACION.md).
+
 ## Qué contiene este avance
 
 Una aplicación Android inicial escrita en Kotlin y Jetpack Compose, con una pantalla de bienvenida, tema claro y oscuro y un icono provisional con la letra L. El juego y la navegación corresponden a avances posteriores.

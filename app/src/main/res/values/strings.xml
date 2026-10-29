@@ -1,5 +1,29 @@
 <resources>
     <string name="app_name">Lexi</string>
-    <string name="welcome_title">Una palabra al día.\nUn nuevo aprendizaje.</string>
-    <string name="welcome_description">Practica vocabulario en español e inglés.</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_review">Repaso</string>
+    <string name="nav_progress">Progreso</string>
+    <string name="home_title">Tu práctica de hoy</string>
+    <string name="first_streak_title">Tu racha empieza hoy</string>
+    <string name="daily_goal">Acierta una palabra para completar el día.</string>
+    <string name="daily_goal_label">Tu meta diaria</string>
+    <string name="practice_mode_title">Modo de práctica</string>
+    <string name="mode_spanish_definition">Definición en español</string>
+    <string name="mode_english_definition">Definition in English</string>
+    <string name="mode_answer_english">Responde en inglés</string>
+    <string name="mode_answer_spanish">Responde en español</string>
+    <string name="write_english">Escribe en inglés</string>
+    <string name="write_spanish">Escribe en español</string>
+    <string name="initial_level">Nivel inicial</string>
+    <string name="start_practice">Empezar</string>
+    <string name="back_home">Volver al inicio</string>
+    <string name="choose_practice">Elegir práctica</string>
+    <string name="no_words_title">No hay palabras disponibles</string>
+    <string name="no_words_description">Todavía no hay palabras para practicar en este nivel.</string>
+    <string name="review_title">Tu repaso</string>
+    <string name="review_empty_title">Tu colección empieza aquí</string>
+    <string name="review_empty_description">Las palabras que practiques aparecerán aquí para que puedas repasarlas.</string>
+    <string name="progress_title">Tu progreso</string>
+    <string name="progress_empty_title">Un día, una palabra</string>
+    <string name="progress_empty_description">Tu primer acierto del día iniciará la racha. Aquí podrás seguir tus días de práctica.</string>
 </resources>

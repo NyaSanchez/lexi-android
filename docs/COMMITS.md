@@ -33,8 +33,7 @@ Los mensajes siguientes son ejemplos para usar cuando el cambio exista y esté c
 | Avance | Comprobación antes del commit | Mensaje orientativo |
 | --- | --- | --- |
 | Proyecto Android inicial | Sincronizar Gradle, compilar y abrir la app | `chore: crear proyecto Android con Kotlin y Compose` |
-| Tema y navegación | Navegar entre Inicio, Repaso y Progreso | `feat: añadir tema visual y navegación principal` |
-| Inicio y selección de modo | Confirmar idioma de definición y respuesta | `feat: crear inicio y selección del modo de práctica` |
+| Inicio, tema y navegación | Elegir un modo, transmitirlo a la práctica y navegar conservando la selección | `feat: crear pantalla de inicio y navegación principal` |
 | Banco de vocabulario | Comprobar palabras, definiciones y traducciones | `feat: añadir vocabulario inicial bilingüe` |
 | Evaluación de letras | Probar posiciones correctas y letras repetidas | `feat: evaluar intentos y letras repetidas` |
 | Partida | Probar seis intentos, entradas inválidas, acierto y derrota | `feat: implementar partida de vocabulario` |

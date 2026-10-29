@@ -4,9 +4,11 @@ Aplicación nativa para Android que permite practicar vocabulario y escritura en
 
 ## Estado actual
 
-Proyecto Android inicial con Kotlin y Jetpack Compose. Incluye una pantalla de bienvenida, recursos de texto, un icono provisional y una base de tema claro y oscuro.
+Aplicación Android con Kotlin y Jetpack Compose. Incluye Inicio, selección de los dos modos de práctica y navegación entre Inicio, Repaso y Progreso, con tema claro y oscuro.
 
-Los modos de práctica, el tablero, la navegación y el guardado de progreso se implementarán en los siguientes avances.
+La selección del modo se conserva al navegar y al recrearse la actividad. «Empezar» abre la práctica con el idioma seleccionado. Como todavía no hay un banco de vocabulario, esa pantalla muestra un estado vacío y permite volver al inicio. Repaso y Progreso muestran sus estados iniciales, sin resultados simulados.
+
+El tablero, la evaluación de intentos, el cálculo de racha y el guardado de progreso se implementarán en los siguientes avances.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
@@ -33,6 +35,7 @@ Configuración de esta primera versión:
 | Gradle Wrapper | 9.5.1 |
 | Kotlin y compilador de Compose | 2.4.20 |
 | Compose BOM | 2026.06.01 |
+| Navigation Compose | 2.9.8 |
 | Android mínimo | Android 8.0, API 26 |
 | compileSdk / targetSdk | 36 / 36 |
 | Identificador de la app | `io.github.nyasanchez.lexi` |
@@ -44,6 +47,7 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 - [Reglas y alcance](docs/REQUISITOS.md): requisitos extraídos del PDF de referencia y decisiones pendientes.
 - [Plan y rutina de commits](docs/COMMITS.md): avances previstos, validación y mensajes de ejemplo.
 - [Primer arranque](docs/PRIMER_ARRANQUE.md): apertura en Android Studio, ejecución y commit del proyecto inicial.
+- [Inicio y navegación](docs/INICIO_NAVEGACION.md): alcance y comprobación del avance actual.
 
 ## Referencia de diseño
 
@@ -59,7 +63,7 @@ Cada avance funcional o documental se guardará en un commit descriptivo y se en
 2. Usar el JDK integrado de Android Studio como Gradle JDK y tener instalado Android SDK Platform 36.
 3. Esperar a que termine la sincronización de Gradle.
 4. Elegir un emulador o dispositivo Android con API 26 o superior, seleccionar la configuración `app` y pulsar **Run**.
-5. Comprobar que aparece Lexi con el mensaje «Una palabra al día. Un nuevo aprendizaje.».
+5. Comprobar que aparece «Tu práctica de hoy», los dos modos de práctica y las pestañas Inicio, Repaso y Progreso.
 
 Desde PowerShell en la raíz, con `JAVA_HOME` apuntando a un JDK compatible con Gradle 9.5.1 (se recomienda el JDK integrado de Android Studio instalado):
 
@@ -79,6 +83,12 @@ app/
     java/io/github/nyasanchez/lexi/
       MainActivity.kt
       ui/LexiApp.kt
+      ui/HomeScreen.kt
+      ui/PracticeMode.kt
+      ui/PracticeEmptyScreen.kt
+      ui/ReviewScreen.kt
+      ui/ProgressScreen.kt
+      ui/ScreenComponents.kt
       ui/theme/Theme.kt
     res/
 docs/
@@ -90,4 +100,4 @@ gradlew.bat
 settings.gradle.kts
 ```
 
-`MainActivity` abre la interfaz; `LexiApp` contiene la bienvenida; `Theme` define los colores. Los textos están en `res/values/strings.xml`.
+`MainActivity` abre la interfaz; `LexiApp` gestiona la navegación y la selección del modo; `HomeScreen` muestra el inicio; `Theme` define los colores. Los textos están en `res/values/strings.xml`.
