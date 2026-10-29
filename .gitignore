@@ -1,33 +1,36 @@
-# Gradle files
+# Gradle y Kotlin: cachés y compilaciones
 .gradle/
-build/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log/OS Files
-*.log
-
-# Android Studio generated files and folders
+.kotlin/
+**/build/
 captures/
 .externalNativeBuild/
 .cxx/
-*.apk
-output.json
 
-# IntelliJ
-*.iml
+# Configuración local de Android Studio
+local.properties
 .idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+*.iml
 
-# Keystore files
+# Binarios de distribución generados
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Firma y credenciales locales
 *.jks
 *.keystore
+keystore.properties
+key.properties
+secrets.properties
+.env
+.env.*
+!.env.example
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# Android Profiling
-*.hprof
+# El código fuente, los recursos y Gradle Wrapper sí se versionan.
+# No ignorar gradle/, gradlew, gradlew.bat ni gradle-wrapper.jar.
