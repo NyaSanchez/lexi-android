@@ -56,11 +56,22 @@ Practicar vocabulario y escritura con una meta diaria sencilla: acertar una pala
 - Usar controles, teclado, barras del sistema y comportamiento adecuados para Android.
 - La maqueta muestra accesos a Ajustes y audio, pero no desarrolla todas sus reglas.
 
+## Decisiones adoptadas durante la implementación
+
+Estas decisiones concretan aspectos que el PDF no especifica por completo:
+
+- El banco inicial contiene 30 pares de palabras con definiciones y ejemplos redactados para Lexi, sin importar un diccionario externo. Véase [Vocabulario inicial](VOCABULARIO_INICIAL.md).
+- Un intento válido tiene la longitud exacta y solo letras admitidas en el idioma de respuesta. En inglés se permite A–Z; en español se añaden Á, É, Í, Ó, Ú, Ü y Ñ. Se admiten minúsculas.
+- Se eliminan los espacios exteriores y se normalizan los caracteres Unicode equivalentes. Los espacios interiores, números y signos se rechazan sin consumir un intento.
+- Las tildes, la diéresis y la ñ deben coincidir para acertar. ARBOL es un intento válido pero incorrecto cuando la solución es ÁRBOL.
+- La validación no consulta un diccionario: una combinación como ZZZZZ consume un intento si tiene la longitud correcta. Repetir un intento válido también consume otra oportunidad.
+- Acertar en el sexto intento cuenta como victoria. Una partida terminada rechaza nuevos envíos; una derrota muestra la solución sin convertirse en victoria.
+
+El [motor de partida](MOTOR_PARTIDA.md) implementa estas reglas. La conexión con el tablero y la persistencia se incorporarán en etapas posteriores.
+
 ## Decisiones pendientes antes de implementar cada función
 
-- Qué constituye un envío válido: longitud, caracteres permitidos y necesidad o no de pertenecer a un diccionario. El ejemplo PAPAL permite probar el algoritmo; no define por sí mismo la validación del vocabulario.
-- Si se exige la tilde exacta para acertar y cómo se normaliza el texto; admitir tildes no equivale a ignorarlas.
-- Fuente, revisión y permiso de uso del banco de palabras, definiciones y frases.
+- Ampliación y revisión lingüística del banco de palabras antes de la publicación.
 - Cómo se seleccionan palabras, se distribuyen niveles y se evitan repeticiones.
 - Qué palabras se incluyen en Repaso y cómo se practica con ellas.
 - Regla de reinicio de racha tras un día sin aciertos, zona horaria y cambios de fecha.

@@ -35,8 +35,8 @@ Los mensajes siguientes son ejemplos para usar cuando el cambio exista y esté c
 | Proyecto Android inicial | Sincronizar Gradle, compilar y abrir la app | `chore: crear proyecto Android con Kotlin y Compose` |
 | Inicio, tema y navegación | Elegir un modo, transmitirlo a la práctica y navegar conservando la selección | `feat: crear pantalla de inicio y navegación principal` |
 | Banco de vocabulario | Comprobar palabras, definiciones y traducciones | `feat: añadir vocabulario inicial bilingüe` |
-| Evaluación de letras | Probar posiciones correctas y letras repetidas | `feat: evaluar intentos y letras repetidas` |
-| Partida | Probar seis intentos, entradas inválidas, acierto y derrota | `feat: implementar partida de vocabulario` |
+| Motor y evaluación de letras | Probar letras repetidas, validación, seis intentos, acierto y derrota mediante pruebas unitarias | `feat: evaluar intentos y letras repetidas` |
+| Tablero de la partida | Conectar el motor y comprobar en el teléfono la escritura, las pistas, los errores y el final de partida | `feat: implementar partida de vocabulario` |
 | Resultado y aprendizaje | Revisar traducción, frase y siguiente palabra | `feat: mostrar resultado y ejemplo de uso` |
 | Guardado de progreso | Cerrar y abrir la app conservando datos | `feat: guardar progreso local de práctica` |
 | Racha diaria | Probar varios aciertos del mismo día y cambios de fecha | `feat: calcular racha y meta diaria` |

@@ -10,7 +10,9 @@ La selección del modo se conserva al navegar y al recrearse la actividad. «Emp
 
 El banco local contiene 30 pares de palabras con definiciones y ejemplos en ambos idiomas. Puede preparar 60 ejercicios contando los dos sentidos. Los datos y sus pruebas ya forman parte del proyecto, pero la pantalla de práctica todavía no consume el repositorio: mantiene su estado vacío hasta implementar la partida.
 
-El tablero, la evaluación de intentos, el cálculo de racha y el guardado de progreso se implementarán en los siguientes avances.
+El motor de partida ya valida respuestas, limita cada palabra a seis intentos válidos y evalúa las letras, incluidas las repetidas. Distingue acierto, derrota y entradas inválidas; admite mayúsculas, minúsculas, tildes y ñ según el idioma. Todavía no está conectado a la pantalla de práctica.
+
+El tablero visible, el cálculo de racha y el guardado de progreso se implementarán en los siguientes avances.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
@@ -50,7 +52,8 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 - [Plan y rutina de commits](docs/COMMITS.md): avances previstos, validación y mensajes de ejemplo.
 - [Primer arranque](docs/PRIMER_ARRANQUE.md): apertura en Android Studio, ejecución y commit del proyecto inicial.
 - [Inicio y navegación](docs/INICIO_NAVEGACION.md): alcance y comprobación de las pantallas actuales.
-- [Vocabulario inicial](docs/VOCABULARIO_INICIAL.md): catálogo, reglas de edición y pruebas del avance actual.
+- [Vocabulario inicial](docs/VOCABULARIO_INICIAL.md): catálogo, reglas de edición y pruebas de los datos.
+- [Motor de partida](docs/MOTOR_PARTIDA.md): validación, seis intentos, letras repetidas y comprobación del avance actual.
 
 ## Referencia de diseño
 
@@ -88,6 +91,10 @@ app/
       data/vocabulary/InitialVocabulary.kt
       data/vocabulary/VocabularyEntry.kt
       data/vocabulary/LocalVocabularyRepository.kt
+      domain/game/WordGame.kt
+      domain/game/GameState.kt
+      domain/game/GuessInput.kt
+      domain/game/LetterEvaluator.kt
       ui/LexiApp.kt
       ui/HomeScreen.kt
       ui/PracticeMode.kt
@@ -98,6 +105,7 @@ app/
       ui/theme/Theme.kt
     res/
   src/test/java/io/github/nyasanchez/lexi/data/vocabulary/
+  src/test/java/io/github/nyasanchez/lexi/domain/game/
 docs/
 gradle/
   libs.versions.toml
@@ -109,4 +117,4 @@ settings.gradle.kts
 
 `MainActivity` abre la interfaz; `LexiApp` gestiona la navegación y la selección del modo; `HomeScreen` muestra el inicio; `Theme` define los colores. Los textos están en `res/values/strings.xml`.
 
-El vocabulario está separado de la interfaz y no depende de un teléfono o emulador para ejecutar sus pruebas. Los informes se generan en `app/build/reports/tests/testDebugUnitTest/index.html`.
+El vocabulario y el motor de partida están separados de la interfaz y no dependen de un teléfono o emulador para ejecutar sus pruebas. Los informes se generan en `app/build/reports/tests/testDebugUnitTest/index.html`.

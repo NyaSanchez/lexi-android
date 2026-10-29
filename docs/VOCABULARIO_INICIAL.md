@@ -1,5 +1,7 @@
 # Banco inicial de vocabulario
 
+Este documento registra la etapa del catálogo. Las reglas para validar los intentos ya se implementaron en el avance posterior: [Motor de partida](MOTOR_PARTIDA.md).
+
 ## Alcance
 
 Se incluyen 30 conceptos cotidianos. Cada uno tiene una palabra, una definición y una frase de ejemplo en español y en inglés. Las frases de cada par expresan la misma idea en ambos idiomas.
@@ -42,7 +44,7 @@ El repositorio toma una copia del catálogo. Rechaza IDs duplicados para evitar 
 5. Revisar la ortografía y la correspondencia de las traducciones. Las pruebas automáticas detectan fallos estructurales, pero no sustituyen la revisión del significado.
 6. Ejecutar las pruebas después del cambio. Si se amplía deliberadamente el catálogo, actualizar el tamaño esperado y la documentación.
 
-Estas restricciones describen el contenido editorial almacenado. No son todavía las reglas para validar lo que escriba la persona: la aceptación de mayúsculas, normalización del teclado y política de tildes de los intentos se implementarán con el juego.
+Estas restricciones describen el contenido editorial almacenado. Las reglas para lo que escriba la persona, incluida la aceptación de mayúsculas, normalización del teclado y política de tildes, se describen en [Motor de partida](MOTOR_PARTIDA.md).
 
 ## Catálogo
 
