@@ -8,6 +8,10 @@ Antes de comenzar una sesión, usar Fetch origin y, si hay cambios remotos, Pull
 
 Un commit guarda una versión en la computadora. Push origin envía los commits a GitHub para que el profesor pueda revisarlos.
 
+## Trabajo en equipo
+
+Para trabajar entre varios integrantes, consultar la [guía de incorporación y contexto](GUIA_EQUIPO.md). La propuesta es una rama por tarea, commits de avance y revisión mediante pull request antes de integrar en `main`. Usar la opción de crear un merge commit para conservar los commits individuales que necesita revisar el profesor. Cada persona usa su identidad de Git y envía sus propios avances.
+
 ## Primeros registros
 
 1. Al crear el repositorio en GitHub Desktop con README, Desktop genera `Initial commit`. Ese registro acredita la creación del repositorio.
