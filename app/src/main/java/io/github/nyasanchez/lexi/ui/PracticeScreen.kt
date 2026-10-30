@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.listSaver
@@ -54,6 +55,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.nyasanchez.lexi.R
 import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
+import io.github.nyasanchez.lexi.data.progress.SavedGame
+import java.time.ZoneId
+import java.util.UUID
 import io.github.nyasanchez.lexi.domain.game.GameState
 import io.github.nyasanchez.lexi.domain.game.GameStatus
 import io.github.nyasanchez.lexi.domain.game.GuessError
@@ -64,7 +68,7 @@ import io.github.nyasanchez.lexi.ui.theme.LexiTheme
 private val AttemptsSaver = listSaver<List<String>, String>(save = { it }, restore = { it.toList() })
 
 @Composable
-fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit) {
+fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiState, onSave: (SavedGame) -> Unit) {
     val entries = remember { LocalVocabularyRepository().all() }
     if (entries.isEmpty()) {
         PracticeEmptyScreen(mode, onGoBack)
@@ -85,6 +89,22 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit) {
         runCatching { WordGame.restore(exercise, attempts) }.getOrElse { WordGame(exercise) }
     }
     val state = game.state
+    val sessionId = rememberSaveable(mode.id, entry.id) { UUID.randomUUID().toString() }
+    var completedAt by rememberSaveable(mode.id, entry.id) { mutableLongStateOf(0L) }
+    var completedZone by rememberSaveable(mode.id, entry.id) { mutableStateOf("") }
+    val completedGame = remember(state, sessionId, completedAt, completedZone) {
+        if (state.status != GameStatus.IN_PROGRESS && completedAt > 0) {
+            SavedGame.from(state, sessionId, completedAt, completedZone)
+        } else null
+    }
+    val saveStatus = when {
+        completedGame == null -> SaveStatus.IDLE
+        saveState.sessionId == sessionId -> saveState.status
+        else -> SaveStatus.SAVING
+    }
+    LaunchedEffect(completedGame) {
+        completedGame?.let(onSave)
+    }
     val keyboard = LocalSoftwareKeyboardController.current
     val focus = LocalFocusManager.current
 
@@ -94,7 +114,9 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit) {
         onGoBack()
     }
     fun requestExit() {
-        if (state.status == GameStatus.IN_PROGRESS && (state.attemptsUsed > 0 || draft.isNotBlank())) {
+        if (saveStatus == SaveStatus.SAVING) return
+        if (saveStatus == SaveStatus.ERROR ||
+            (state.status == GameStatus.IN_PROGRESS && (state.attemptsUsed > 0 || draft.isNotBlank()))) {
             showExitDialog = true
         } else {
             leave()
@@ -113,6 +135,10 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit) {
         onSubmit = {
             when (val result = game.submit(draft)) {
                 is SubmissionResult.Accepted -> {
+                    if (result.state.status != GameStatus.IN_PROGRESS) {
+                        completedAt = System.currentTimeMillis()
+                        completedZone = ZoneId.systemDefault().id
+                    }
                     attempts = result.state.guesses.map { it.word }
                     draft = ""
                     errorName = null
@@ -128,12 +154,14 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit) {
             entryId = entries[(entries.indexOf(entry) + 1) % entries.size].id
         },
         onGoBack = ::requestExit,
+        saveStatus = saveStatus,
+        onRetrySave = { completedGame?.let(onSave) },
     )
     if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false },
-            title = { Text(stringResource(R.string.leave_game_title)) },
-            text = { Text(stringResource(R.string.leave_game_description)) },
+            title = { Text(stringResource(if (saveStatus == SaveStatus.ERROR) R.string.leave_unsaved_title else R.string.leave_game_title)) },
+            text = { Text(stringResource(if (saveStatus == SaveStatus.ERROR) R.string.leave_unsaved_description else R.string.leave_game_description)) },
             confirmButton = {
                 TextButton(onClick = { showExitDialog = false; leave() }) {
                     Text(stringResource(R.string.leave_game))
@@ -160,9 +188,11 @@ private fun PracticeContent(
     onSubmit: () -> Unit,
     onNext: () -> Unit,
     onGoBack: () -> Unit,
+    saveStatus: SaveStatus = SaveStatus.IDLE,
+    onRetrySave: () -> Unit = {},
 ) {
     if (state.status != GameStatus.IN_PROGRESS) {
-        PracticeResultScreen(state, position, total, onNext, onGoBack)
+        PracticeResultScreen(state, position, total, onNext, onGoBack, saveStatus, onRetrySave)
         return
     }
     val listState = rememberLazyListState()

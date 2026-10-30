@@ -8,6 +8,7 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isEnabled
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -51,6 +52,9 @@ class PracticeFlowTest {
 
     private fun next() {
         show("Siguiente palabra")
+        compose.waitUntil(timeoutMillis = 5_000) {
+            compose.onAllNodes(hasText("Siguiente palabra") and isEnabled()).fetchSemanticsNodes().isNotEmpty()
+        }
         compose.onNodeWithText("Siguiente palabra").performClick()
     }
 

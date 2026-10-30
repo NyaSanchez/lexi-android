@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,6 +62,8 @@ internal fun PracticeResultScreen(
     total: Int,
     onNext: () -> Unit,
     onGoBack: () -> Unit,
+    saveStatus: SaveStatus = SaveStatus.IDLE,
+    onRetrySave: () -> Unit = {},
 ) {
     require(state.status != GameStatus.IN_PROGRESS)
     val solution = requireNotNull(state.solution)
@@ -75,11 +78,28 @@ internal fun PracticeResultScreen(
         ) {
             item(key = "header") {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onGoBack) {
+                    IconButton(onClick = onGoBack, enabled = saveStatus != SaveStatus.SAVING) {
                         Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.back_home))
                     }
                     Box(Modifier.weight(1f)) { LexiBrand() }
                     Text(stringResource(R.string.word_position, position, total), style = MaterialTheme.typography.labelLarge)
+                }
+            }
+            if (saveStatus != SaveStatus.IDLE) {
+                item(key = "save_status") {
+                    Column(Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
+                        verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                            if (saveStatus == SaveStatus.SAVING) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                            Text(stringResource(when (saveStatus) {
+                                SaveStatus.SAVING -> R.string.saving_result
+                                SaveStatus.SAVED -> R.string.result_saved
+                                else -> R.string.save_result_error
+                            }), style = MaterialTheme.typography.bodyMedium,
+                                color = if (saveStatus == SaveStatus.ERROR) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        if (saveStatus == SaveStatus.ERROR) TextButton(onClick = onRetrySave) { Text(stringResource(R.string.retry_save)) }
+                    }
                 }
             }
             item(key = "summary") {
@@ -153,13 +173,14 @@ internal fun PracticeResultScreen(
             }
             item(key = "actions") {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = onNext, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+                    Button(onClick = onNext, enabled = saveStatus == SaveStatus.SAVED || saveStatus == SaveStatus.IDLE,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
                         shape = RoundedCornerShape(14.dp)) {
                         Text(stringResource(R.string.next_word), fontWeight = FontWeight.Bold)
                         Spacer(Modifier.size(10.dp))
                         Icon(painterResource(R.drawable.ic_arrow_forward), contentDescription = null)
                     }
-                    TextButton(onClick = onGoBack, modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = onGoBack, enabled = saveStatus != SaveStatus.SAVING, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.back_home))
                     }
                 }

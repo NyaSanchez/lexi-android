@@ -30,6 +30,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.nyasanchez.lexi.R
 
 private enum class MainDestination(
@@ -44,6 +46,9 @@ private enum class MainDestination(
 
 @Composable
 fun LexiApp() {
+    val progressModel: ProgressViewModel = viewModel()
+    val progress by progressModel.progress.collectAsStateWithLifecycle()
+    val currentSave by progressModel.save.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: MainDestination.HOME.route
@@ -111,7 +116,7 @@ fun LexiApp() {
                 ReviewScreen(onGoHome = ::goHome)
             }
             composable(MainDestination.PROGRESS.route) {
-                ProgressScreen(onGoHome = ::goHome)
+                ProgressScreen(state = progress, onRetry = progressModel::reload, onGoHome = ::goHome)
             }
             composable(
                 route = "practice/{mode}",
@@ -120,6 +125,8 @@ fun LexiApp() {
                 PracticeScreen(
                     mode = PracticeMode.fromId(entry.arguments?.getString("mode")),
                     onGoBack = { navController.popBackStack() },
+                    saveState = currentSave,
+                    onSave = progressModel::save,
                 )
             }
         }

@@ -4,9 +4,7 @@
     <string name="nav_review">Repaso</string>
     <string name="nav_progress">Progreso</string>
     <string name="home_title">Tu práctica de hoy</string>
-    <string name="first_streak_title">Tu racha empieza hoy</string>
     <string name="daily_goal">Acierta una palabra para completar el día.</string>
-    <string name="daily_goal_label">Tu meta diaria</string>
     <string name="practice_mode_title">Modo de práctica</string>
     <string name="mode_spanish_definition">Definición en español</string>
     <string name="mode_english_definition">Definition in English</string>
@@ -24,8 +22,6 @@
     <string name="review_empty_title">Tu colección empieza aquí</string>
     <string name="review_empty_description">Las palabras que practiques aparecerán aquí para que puedas repasarlas.</string>
     <string name="progress_title">Tu progreso</string>
-    <string name="progress_empty_title">Un día, una palabra</string>
-    <string name="progress_empty_description">Tu primer acierto del día iniciará la racha. Aquí podrás seguir tus días de práctica.</string>
     <string name="word_position">Palabra %1$d de %2$d</string>
     <plurals name="word_length">
         <item quantity="one">%1$d letra</item>
@@ -78,4 +74,31 @@
     <string name="leave_game_description">Se perderán los intentos de esta palabra. Puedes quedarte y seguir practicando.</string>
     <string name="leave_game">Salir</string>
     <string name="keep_playing">Seguir jugando</string>
+    <string name="daily_practice_title">Tu práctica diaria</string>
+    <string name="saving_result">Guardando resultado…</string>
+    <string name="result_saved">Resultado guardado</string>
+    <string name="save_result_error">No se pudo guardar este resultado. Intenta de nuevo antes de continuar.</string>
+    <string name="retry_save">Reintentar guardado</string>
+    <string name="leave_unsaved_title">¿Salir sin guardar?</string>
+    <string name="leave_unsaved_description">Este resultado todavía no está guardado. Si sales ahora, no aparecerá en Progreso.</string>
+    <string name="progress_loading">Cargando tu progreso…</string>
+    <string name="progress_load_error">No pudimos leer tu progreso. Intenta de nuevo.</string>
+    <string name="retry_load">Volver a intentar</string>
+    <string name="history_empty_title">Tu historial empieza aquí</string>
+    <string name="history_empty_description">Termina una partida para guardar su resultado y consultarlo después.</string>
+    <string name="progress_summary">Tu práctica acumulada</string>
+    <string name="total_games">Partidas terminadas</string>
+    <string name="total_wins">Aciertos</string>
+    <string name="total_losses">Sin acierto</string>
+    <string name="unique_words">Palabras distintas acertadas</string>
+    <string name="unique_words_description">Cada par de traducciones cuenta como una palabra distinta.</string>
+    <string name="recent_games">Últimas partidas</string>
+    <string name="recent_games_description">Se muestran hasta 20 resultados. Los totales incluyen todo tu historial.</string>
+    <string name="history_outcome">%1$s · %2$s</string>
+    <string name="history_won">Acierto</string>
+    <string name="history_lost">Sin acierto</string>
+    <plurals name="history_attempts">
+        <item quantity="one">%1$d intento utilizado</item>
+        <item quantity="other">%1$d intentos utilizados</item>
+    </plurals>
 </resources>

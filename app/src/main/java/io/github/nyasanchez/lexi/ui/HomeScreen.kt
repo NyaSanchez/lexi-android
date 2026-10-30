@@ -106,7 +106,7 @@ private fun DailyGoalCard() {
         ) {
             Icon(painterResource(R.drawable.ic_flame), contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(44.dp))
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(stringResource(R.string.first_streak_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.daily_practice_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Text(stringResource(R.string.daily_goal), style = MaterialTheme.typography.bodyMedium)
             }
         }

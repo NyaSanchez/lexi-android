@@ -1,5 +1,7 @@
 # Resultado y aprendizaje
 
+Este documento registra la etapa de aprendizaje. El avance posterior ya guarda los resultados y los muestra en Progreso: [Guardado de progreso](GUARDADO_PROGRESO.md).
+
 ## Alcance
 
 Este avance desarrolla la parte de aprendizaje de la página 7 del PDF. Al terminar una palabra, la aplicación presenta una vista dedicada al resultado:

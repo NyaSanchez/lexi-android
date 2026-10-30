@@ -70,7 +70,11 @@ Estas decisiones concretan aspectos que el PDF no especifica por completo:
 - La práctica recorre las treinta entradas en orden y después vuelve al principio. Una nueva sesión desde Inicio comienza en la primera palabra. La selección adaptada al progreso queda para una etapa posterior.
 - La palabra, los intentos aceptados y el borrador se recuperan al recrearse la actividad, por ejemplo al girar el teléfono. Salir explícitamente al inicio termina la sesión; se pide confirmación si hay intentos o texto en una partida en curso.
 
-El [motor de partida](MOTOR_PARTIDA.md) y la [pantalla de práctica](PARTIDA.md) implementan estas reglas. El progreso permanente y la racha se incorporarán después.
+- Cada partida terminada se guarda una sola vez por identificador. Repetir la misma palabra en una nueva partida sí genera otro resultado. Una partida abandonada no cuenta como victoria ni como derrota.
+- Progreso muestra totales históricos y las últimas veinte partidas. «Palabras distintas acertadas» cuenta cada ID del catálogo una vez, aunque se acierte en ambos idiomas.
+- Se conserva el instante de finalización y la fecha y zona horaria del dispositivo en ese momento. Estos datos preparan el cálculo posterior de la racha; todavía no se calcula.
+
+El [motor de partida](MOTOR_PARTIDA.md), la [pantalla de práctica](PARTIDA.md) y el [guardado de progreso](GUARDADO_PROGRESO.md) implementan estas reglas. La racha se incorporará después.
 
 ## Decisiones pendientes antes de implementar cada función
 
@@ -78,7 +82,7 @@ El [motor de partida](MOTOR_PARTIDA.md) y la [pantalla de práctica](PARTIDA.md)
 - Selección de palabras adaptada al progreso y distribución de niveles.
 - Qué palabras se incluyen en Repaso y cómo se practica con ellas.
 - Regla de reinicio de racha tras un día sin aciertos, zona horaria y cambios de fecha.
-- Guardado permanente del progreso y recuperación después de cerrar explícitamente la aplicación.
+- Recuperación de una partida sin terminar después de cerrar explícitamente la aplicación; los resultados terminados ya se conservan.
 - Comportamiento de Ajustes y del botón de pronunciación.
 
 ## Propuesta técnica inicial
