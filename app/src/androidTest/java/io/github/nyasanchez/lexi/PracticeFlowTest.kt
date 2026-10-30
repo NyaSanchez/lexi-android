@@ -94,6 +94,8 @@ class PracticeFlowTest {
         compose.onNodeWithText("4 letras").assertIsDisplayed()
         submit("CASA")
         show("¡Acertaste!")
+        show("Esta es mi casa.")
+        show("This is my house.")
         next()
         submit("MANZANA")
         show("¡Acertaste!")
@@ -104,6 +106,8 @@ class PracticeFlowTest {
         submit("a\u0301rbol")
         show("¡Acertaste!")
         compose.onNodeWithText("ÁRBOL · tree").assertIsDisplayed()
+        show("El árbol da sombra.")
+        show("The tree gives shade.")
     }
 
     @Test
@@ -113,11 +117,37 @@ class PracticeFlowTest {
         show("Intentos agotados")
         compose.onNodeWithText("HOUSE · casa").assertIsDisplayed()
         compose.onNode(hasSetTextAction()).assertDoesNotExist()
+        show("This is my house.")
+        show("Esta es mi casa.")
         screenshot("lexi-loss.png")
         next()
         show("Intentos: 0 de 6")
         submit("APPLE")
         show("¡Acertaste!")
+    }
+
+    @Test
+    fun learningResultRestoresAndNextWordHidesThePreviousExamples() {
+        start()
+        compose.onNodeWithText("This is my house.").assertDoesNotExist()
+        submit("HOUSE")
+        show("Lo resolviste en 1 intento.")
+        show("This is my house.")
+        show("Esta es mi casa.")
+        show("Ver mis intentos")
+        compose.onNodeWithText("Ver mis intentos").performClick()
+        show("Intentos: 1 de 6")
+        compose.activityRule.scenario.recreate()
+        show("Ocultar mis intentos")
+        compose.onNodeWithText("Ocultar mis intentos").performClick()
+        show("This is my house.")
+        next()
+        show("Palabra 2 de 30")
+        compose.onNodeWithText("This is my house.").assertDoesNotExist()
+        compose.onNodeWithText("The apple is on the table.").assertDoesNotExist()
+        submit("APPLE")
+        show("The apple is on the table.")
+        show("La manzana está sobre la mesa.")
     }
 
     @Test

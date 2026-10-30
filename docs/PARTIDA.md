@@ -1,5 +1,7 @@
 # Partida en el teléfono
 
+Este documento registra la etapa del tablero. El resultado básico ya se amplió con una vista de aprendizaje y ejemplos: [Resultado y aprendizaje](RESULTADO_APRENDIZAJE.md).
+
 ## Qué incorpora este avance
 
 «Empezar» abre una partida real en el modo elegido. La pantalla muestra la definición, la cantidad de letras, seis filas, los intentos usados y un campo para responder. Se puede enviar con **Comprobar** o con la acción de finalizar del teclado.

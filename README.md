@@ -10,9 +10,9 @@ La selección del modo se conserva al navegar y al recrearse la actividad. «Emp
 
 El banco local contiene 30 pares de palabras con definiciones y ejemplos en ambos idiomas. La pantalla de práctica ya utiliza ese catálogo y el motor de partida: muestra la definición, un tablero de seis filas y un campo para responder con el teclado del teléfono.
 
-Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, se muestra la solución y su traducción y se permite pasar a la siguiente palabra. El estado de la partida y el borrador se conservan al recrearse la actividad.
+Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, se abre una vista de resultado con la solución, su traducción y una frase de ejemplo en ambos idiomas. Se pueden revisar los intentos y pasar a la siguiente palabra. El estado de la partida y el borrador se conservan al recrearse la actividad.
 
-La selección de palabras sigue el orden del catálogo y vuelve al principio después de las treinta. Salir al inicio termina esa sesión; las frases de aprendizaje, el cálculo de racha y el guardado permanente de progreso se implementarán en los siguientes avances. Inicio, Repaso y Progreso todavía no reflejan los resultados de estas partidas.
+La selección de palabras sigue el orden del catálogo y vuelve al principio después de las treinta. Salir al inicio termina esa sesión; el cálculo de racha y el guardado permanente de progreso se implementarán en los siguientes avances. Inicio, Repaso y Progreso todavía no reflejan los resultados de estas partidas.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
@@ -54,7 +54,8 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 - [Inicio y navegación](docs/INICIO_NAVEGACION.md): alcance y comprobación de las pantallas actuales.
 - [Vocabulario inicial](docs/VOCABULARIO_INICIAL.md): catálogo, reglas de edición y pruebas de los datos.
 - [Motor de partida](docs/MOTOR_PARTIDA.md): validación, seis intentos y letras repetidas.
-- [Partida en el teléfono](docs/PARTIDA.md): tablero, teclado, recuperación del estado y comprobación del avance actual.
+- [Partida en el teléfono](docs/PARTIDA.md): tablero, teclado y recuperación del estado.
+- [Resultado y aprendizaje](docs/RESULTADO_APRENDIZAJE.md): ejemplos bilingües, revisión de intentos y comprobación del avance actual.
 
 ## Referencia de diseño
 
@@ -100,6 +101,7 @@ app/
       ui/HomeScreen.kt
       ui/PracticeMode.kt
       ui/PracticeScreen.kt
+      ui/PracticeResultScreen.kt
       ui/GuessBoard.kt
       ui/PracticeEmptyScreen.kt
       ui/ReviewScreen.kt

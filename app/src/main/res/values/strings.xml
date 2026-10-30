@@ -60,7 +60,19 @@
     <string name="game_won">¡Acertaste!</string>
     <string name="game_lost">Intentos agotados</string>
     <string name="game_solution">%1$s · %2$s</string>
-    <string name="game_try_again">Ya conoces la respuesta. Practica otra palabra y sigue aprendiendo.</string>
+    <string name="result_lost_description">Esta vez no acertaste. Repasa la palabra con este ejemplo y sigue practicando.</string>
+    <string name="result_example_title">Ejemplo de uso</string>
+    <string name="result_language_pair">%1$s → %2$s</string>
+    <string name="language_english">Inglés</string>
+    <string name="language_spanish">Español</string>
+    <plurals name="result_attempts">
+        <item quantity="one">Lo resolviste en %1$d intento.</item>
+        <item quantity="other">Lo resolviste en %1$d intentos.</item>
+    </plurals>
+    <string name="show_attempts">Ver mis intentos</string>
+    <string name="hide_attempts">Ocultar mis intentos</string>
+    <string name="attempts_expanded">Tablero desplegado</string>
+    <string name="attempts_collapsed">Tablero oculto</string>
     <string name="next_word">Siguiente palabra</string>
     <string name="leave_game_title">¿Salir de esta partida?</string>
     <string name="leave_game_description">Se perderán los intentos de esta palabra. Puedes quedarte y seguir practicando.</string>

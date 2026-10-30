@@ -60,7 +60,6 @@ import io.github.nyasanchez.lexi.domain.game.GuessError
 import io.github.nyasanchez.lexi.domain.game.SubmissionResult
 import io.github.nyasanchez.lexi.domain.game.WordGame
 import io.github.nyasanchez.lexi.ui.theme.LexiTheme
-import java.util.Locale
 
 private val AttemptsSaver = listSaver<List<String>, String>(save = { it }, restore = { it.toList() })
 
@@ -162,11 +161,14 @@ private fun PracticeContent(
     onNext: () -> Unit,
     onGoBack: () -> Unit,
 ) {
+    if (state.status != GameStatus.IN_PROGRESS) {
+        PracticeResultScreen(state, position, total, onNext, onGoBack)
+        return
+    }
     val listState = rememberLazyListState()
-    // Al enviar una respuesta, volver a las pistas; al cambiar de palabra, a la definición.
+    // Al enviar una respuesta incorrecta, volver a las pistas; al cambiar de palabra, a la definición.
     LaunchedEffect(state.entryId, state.attemptsUsed) {
         when {
-            state.status != GameStatus.IN_PROGRESS -> listState.animateScrollToItem(4)
             state.attemptsUsed > 0 -> listState.animateScrollToItem(2)
             else -> listState.scrollToItem(0)
         }
@@ -213,11 +215,7 @@ private fun PracticeContent(
             }
             item { LetterLegend() }
             item {
-                if (state.status == GameStatus.IN_PROGRESS) {
-                    GuessEntry(mode, state.wordLength, draft, error, onDraftChange, onSubmit)
-                } else {
-                    RoundResult(state, onNext, onGoBack)
-                }
+                GuessEntry(mode, state.wordLength, draft, error, onDraftChange, onSubmit)
             }
         }
     }
@@ -260,27 +258,6 @@ private fun GuessEntry(
             shape = RoundedCornerShape(14.dp)) {
             Text(stringResource(R.string.check_answer), fontWeight = FontWeight.Bold)
         }
-    }
-}
-
-@Composable
-private fun RoundResult(state: GameState, onNext: () -> Unit, onGoBack: () -> Unit) {
-    val solution = requireNotNull(state.solution)
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.primaryContainer) {
-            Column(Modifier.fillMaxWidth().padding(18.dp).semantics { liveRegion = LiveRegionMode.Polite },
-                verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(stringResource(if (state.status == GameStatus.WON) R.string.game_won else R.string.game_lost),
-                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.game_solution, solution.answer.uppercase(Locale.ROOT), solution.translation),
-                    style = MaterialTheme.typography.titleMedium)
-                if (state.status == GameStatus.LOST) Text(stringResource(R.string.game_try_again))
-            }
-        }
-        Button(onClick = onNext, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
-            Text(stringResource(R.string.next_word))
-        }
-        TextButton(onClick = onGoBack, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.back_home)) }
     }
 }
 
