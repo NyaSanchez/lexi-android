@@ -37,7 +37,7 @@ Los mensajes siguientes son ejemplos para usar cuando el cambio exista y esté c
 | Banco de vocabulario | Comprobar palabras, definiciones y traducciones | `feat: añadir vocabulario inicial bilingüe` |
 | Motor y evaluación de letras | Probar letras repetidas, validación, seis intentos, acierto y derrota mediante pruebas unitarias | `feat: evaluar intentos y letras repetidas` |
 | Tablero de la partida | Conectar el motor y comprobar en el teléfono la escritura, las pistas, los errores y el final de partida | `feat: implementar partida de vocabulario` |
-| Resultado y aprendizaje | Revisar traducción, frase y siguiente palabra | `feat: mostrar resultado y ejemplo de uso` |
+| Resultado y aprendizaje | Ampliar el resultado básico con frases bilingües y revisar el flujo para seguir aprendiendo | `feat: mostrar resultado y ejemplo de uso` |
 | Guardado de progreso | Cerrar y abrir la app conservando datos | `feat: guardar progreso local de práctica` |
 | Racha diaria | Probar varios aciertos del mismo día y cambios de fecha | `feat: calcular racha y meta diaria` |
 | Repaso | Comprobar selección y práctica según las reglas acordadas | `feat: añadir práctica de repaso` |

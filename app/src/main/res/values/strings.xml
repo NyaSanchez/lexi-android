@@ -26,4 +26,44 @@
     <string name="progress_title">Tu progreso</string>
     <string name="progress_empty_title">Un día, una palabra</string>
     <string name="progress_empty_description">Tu primer acierto del día iniciará la racha. Aquí podrás seguir tus días de práctica.</string>
+    <string name="word_position">Palabra %1$d de %2$d</string>
+    <plurals name="word_length">
+        <item quantity="one">%1$d letra</item>
+        <item quantity="other">%1$d letras</item>
+    </plurals>
+    <string name="attempts_used">Intentos: %1$d de %2$d</string>
+    <string name="your_answer">Tu respuesta</string>
+    <plurals name="guess_hint_english">
+        <item quantity="one">Escribe %1$d letra en inglés.</item>
+        <item quantity="other">Escribe %1$d letras en inglés.</item>
+    </plurals>
+    <plurals name="guess_hint_spanish">
+        <item quantity="one">Escribe %1$d letra. Las tildes y la ñ cuentan.</item>
+        <item quantity="other">Escribe %1$d letras. Las tildes y la ñ cuentan.</item>
+    </plurals>
+    <string name="check_answer">Comprobar</string>
+    <string name="guess_empty">Escribe una respuesta antes de comprobar.</string>
+    <plurals name="guess_wrong_length">
+        <item quantity="one">La respuesta debe tener %1$d letra. No perdiste un intento.</item>
+        <item quantity="other">La respuesta debe tener %1$d letras. No perdiste un intento.</item>
+    </plurals>
+    <string name="guess_english_letters">Usa solo letras de la A a la Z, sin espacios interiores. No perdiste un intento.</string>
+    <string name="guess_spanish_letters">Usa letras, tildes, ü o ñ, sin números ni espacios interiores. No perdiste un intento.</string>
+    <string name="guess_finished">Esta partida ya terminó.</string>
+    <string name="letter_correct">Posición correcta</string>
+    <string name="letter_present">Otra posición</string>
+    <string name="letter_absent">Sin coincidencia</string>
+    <string name="board_active_row">Intento %1$d, fila actual pendiente de enviar</string>
+    <string name="board_empty_row">Intento %1$d, fila vacía</string>
+    <string name="board_letter">Letra %1$d: %2$s, %3$s</string>
+    <string name="board_evaluated_row">Intento %1$d: %2$s. %3$s</string>
+    <string name="game_won">¡Acertaste!</string>
+    <string name="game_lost">Intentos agotados</string>
+    <string name="game_solution">%1$s · %2$s</string>
+    <string name="game_try_again">Ya conoces la respuesta. Practica otra palabra y sigue aprendiendo.</string>
+    <string name="next_word">Siguiente palabra</string>
+    <string name="leave_game_title">¿Salir de esta partida?</string>
+    <string name="leave_game_description">Se perderán los intentos de esta palabra. Puedes quedarte y seguir practicando.</string>
+    <string name="leave_game">Salir</string>
+    <string name="keep_playing">Seguir jugando</string>
 </resources>

@@ -58,5 +58,17 @@ class WordGame(private val exercise: VocabularyExercise) {
 
     companion object {
         const val MAX_ATTEMPTS = 6
+
+        /** Reconstruye el estado a partir de hasta seis envíos aceptados, sin registrar progreso. */
+        fun restore(exercise: VocabularyExercise, acceptedGuesses: List<String>): WordGame {
+            require(acceptedGuesses.size <= MAX_ATTEMPTS)
+            return WordGame(exercise).also { game ->
+                acceptedGuesses.forEach { guess ->
+                    require(game.submit(guess) is SubmissionResult.Accepted) {
+                        "El historial contiene un envío inválido o posterior al final de la partida."
+                    }
+                }
+            }
+        }
     }
 }

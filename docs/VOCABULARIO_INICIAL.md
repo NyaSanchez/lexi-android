@@ -2,6 +2,8 @@
 
 Este documento registra la etapa del catálogo. Las reglas para validar los intentos ya se implementaron en el avance posterior: [Motor de partida](MOTOR_PARTIDA.md).
 
+La pantalla de práctica ya utiliza estos datos; véase [Partida en el teléfono](PARTIDA.md) para el estado actual.
+
 ## Alcance
 
 Se incluyen 30 conceptos cotidianos. Cada uno tiene una palabra, una definición y una frase de ejemplo en español y en inglés. Las frases de cada par expresan la misma idea en ambos idiomas.

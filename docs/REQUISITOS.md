@@ -67,15 +67,18 @@ Estas decisiones concretan aspectos que el PDF no especifica por completo:
 - La validación no consulta un diccionario: una combinación como ZZZZZ consume un intento si tiene la longitud correcta. Repetir un intento válido también consume otra oportunidad.
 - Acertar en el sexto intento cuenta como victoria. Una partida terminada rechaza nuevos envíos; una derrota muestra la solución sin convertirse en victoria.
 
-El [motor de partida](MOTOR_PARTIDA.md) implementa estas reglas. La conexión con el tablero y la persistencia se incorporarán en etapas posteriores.
+- La práctica recorre las treinta entradas en orden y después vuelve al principio. Una nueva sesión desde Inicio comienza en la primera palabra. La selección adaptada al progreso queda para una etapa posterior.
+- La palabra, los intentos aceptados y el borrador se recuperan al recrearse la actividad, por ejemplo al girar el teléfono. Salir explícitamente al inicio termina la sesión; se pide confirmación si hay intentos o texto en una partida en curso.
+
+El [motor de partida](MOTOR_PARTIDA.md) y la [pantalla de práctica](PARTIDA.md) implementan estas reglas. El progreso permanente y la racha se incorporarán después.
 
 ## Decisiones pendientes antes de implementar cada función
 
 - Ampliación y revisión lingüística del banco de palabras antes de la publicación.
-- Cómo se seleccionan palabras, se distribuyen niveles y se evitan repeticiones.
+- Selección de palabras adaptada al progreso y distribución de niveles.
 - Qué palabras se incluyen en Repaso y cómo se practica con ellas.
 - Regla de reinicio de racha tras un día sin aciertos, zona horaria y cambios de fecha.
-- Recuperación de una partida al cerrar o girar la aplicación.
+- Guardado permanente del progreso y recuperación después de cerrar explícitamente la aplicación.
 - Comportamiento de Ajustes y del botón de pronunciación.
 
 ## Propuesta técnica inicial

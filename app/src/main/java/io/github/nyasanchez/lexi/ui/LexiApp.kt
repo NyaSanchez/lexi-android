@@ -3,6 +3,7 @@ package io.github.nyasanchez.lexi.ui
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -93,7 +94,7 @@ fun LexiApp() {
         NavHost(
             navController = navController,
             startDestination = MainDestination.HOME.route,
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).consumeWindowInsets(innerPadding),
         ) {
             composable(MainDestination.HOME.route) {
                 HomeScreen(
@@ -116,7 +117,7 @@ fun LexiApp() {
                 route = "practice/{mode}",
                 arguments = listOf(navArgument("mode") { type = NavType.StringType }),
             ) { entry ->
-                PracticeEmptyScreen(
+                PracticeScreen(
                     mode = PracticeMode.fromId(entry.arguments?.getString("mode")),
                     onGoBack = { navController.popBackStack() },
                 )

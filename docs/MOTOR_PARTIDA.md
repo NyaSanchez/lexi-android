@@ -1,5 +1,7 @@
 # Motor de partida
 
+Este documento registra la etapa del motor. El avance posterior ya lo conecta a la interfaz: [Partida en el teléfono](PARTIDA.md).
+
 ## Alcance de este avance
 
 Se incorpora la lógica de una partida para una palabra y un idioma. Es Kotlin independiente de la interfaz: recibe un ejercicio del banco local y devuelve el estado y la evaluación de cada intento.

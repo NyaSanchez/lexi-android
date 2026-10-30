@@ -8,11 +8,11 @@ Aplicación Android con Kotlin y Jetpack Compose. Incluye Inicio, selección de 
 
 La selección del modo se conserva al navegar y al recrearse la actividad. «Empezar» abre la práctica con el idioma seleccionado. Repaso y Progreso muestran sus estados iniciales, sin resultados simulados.
 
-El banco local contiene 30 pares de palabras con definiciones y ejemplos en ambos idiomas. Puede preparar 60 ejercicios contando los dos sentidos. Los datos y sus pruebas ya forman parte del proyecto, pero la pantalla de práctica todavía no consume el repositorio: mantiene su estado vacío hasta implementar la partida.
+El banco local contiene 30 pares de palabras con definiciones y ejemplos en ambos idiomas. La pantalla de práctica ya utiliza ese catálogo y el motor de partida: muestra la definición, un tablero de seis filas y un campo para responder con el teclado del teléfono.
 
-El motor de partida ya valida respuestas, limita cada palabra a seis intentos válidos y evalúa las letras, incluidas las repetidas. Distingue acierto, derrota y entradas inválidas; admite mayúsculas, minúsculas, tildes y ñ según el idioma. Todavía no está conectado a la pantalla de práctica.
+Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, se muestra la solución y su traducción y se permite pasar a la siguiente palabra. El estado de la partida y el borrador se conservan al recrearse la actividad.
 
-El tablero visible, el cálculo de racha y el guardado de progreso se implementarán en los siguientes avances.
+La selección de palabras sigue el orden del catálogo y vuelve al principio después de las treinta. Salir al inicio termina esa sesión; las frases de aprendizaje, el cálculo de racha y el guardado permanente de progreso se implementarán en los siguientes avances. Inicio, Repaso y Progreso todavía no reflejan los resultados de estas partidas.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
@@ -53,7 +53,8 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 - [Primer arranque](docs/PRIMER_ARRANQUE.md): apertura en Android Studio, ejecución y commit del proyecto inicial.
 - [Inicio y navegación](docs/INICIO_NAVEGACION.md): alcance y comprobación de las pantallas actuales.
 - [Vocabulario inicial](docs/VOCABULARIO_INICIAL.md): catálogo, reglas de edición y pruebas de los datos.
-- [Motor de partida](docs/MOTOR_PARTIDA.md): validación, seis intentos, letras repetidas y comprobación del avance actual.
+- [Motor de partida](docs/MOTOR_PARTIDA.md): validación, seis intentos y letras repetidas.
+- [Partida en el teléfono](docs/PARTIDA.md): tablero, teclado, recuperación del estado y comprobación del avance actual.
 
 ## Referencia de diseño
 
@@ -69,7 +70,7 @@ Cada avance funcional o documental se guardará en un commit descriptivo y se en
 2. Usar el JDK integrado de Android Studio como Gradle JDK y tener instalado Android SDK Platform 36.
 3. Esperar a que termine la sincronización de Gradle.
 4. Elegir un emulador o dispositivo Android con API 26 o superior, seleccionar la configuración `app` y pulsar **Run**.
-5. Comprobar que aparece «Tu práctica de hoy», los dos modos de práctica y las pestañas Inicio, Repaso y Progreso.
+5. Elegir un modo y pulsar «Empezar». Comprobar la definición, enviar una respuesta y revisar las pistas del tablero.
 
 Desde PowerShell en la raíz, con `JAVA_HOME` apuntando a un JDK compatible con Gradle 9.5.1 (se recomienda el JDK integrado de Android Studio instalado):
 
@@ -98,6 +99,8 @@ app/
       ui/LexiApp.kt
       ui/HomeScreen.kt
       ui/PracticeMode.kt
+      ui/PracticeScreen.kt
+      ui/GuessBoard.kt
       ui/PracticeEmptyScreen.kt
       ui/ReviewScreen.kt
       ui/ProgressScreen.kt
@@ -106,6 +109,7 @@ app/
     res/
   src/test/java/io/github/nyasanchez/lexi/data/vocabulary/
   src/test/java/io/github/nyasanchez/lexi/domain/game/
+  src/androidTest/java/io/github/nyasanchez/lexi/PracticeFlowTest.kt
 docs/
 gradle/
   libs.versions.toml
@@ -118,3 +122,5 @@ settings.gradle.kts
 `MainActivity` abre la interfaz; `LexiApp` gestiona la navegación y la selección del modo; `HomeScreen` muestra el inicio; `Theme` define los colores. Los textos están en `res/values/strings.xml`.
 
 El vocabulario y el motor de partida están separados de la interfaz y no dependen de un teléfono o emulador para ejecutar sus pruebas. Los informes se generan en `app/build/reports/tests/testDebugUnitTest/index.html`.
+
+Las pruebas de pantalla sí necesitan un dispositivo desbloqueado o un emulador. Se ejecutan con `./gradlew.bat :app:connectedDebugAndroidTest`; realizan partidas de prueba y recrean la actividad.
