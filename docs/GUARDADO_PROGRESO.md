@@ -35,7 +35,7 @@ Los contadores son acumulados:
 
 Se muestran los últimos veinte registros, ordenados por instante de finalización. Los totales incluyen todos los registros. Las fechas visibles se presentan en la zona actual del teléfono; la fecha y zona originales permanecen en la base de datos.
 
-La racha, el calendario y Repaso siguen pendientes. Una partida en curso puede recuperarse al girar, pero no se promete su recuperación tras cerrar explícitamente la aplicación. El historial terminado sí se conserva después del cierre. Desinstalar o borrar los datos de la app es distinto de cerrarla y puede eliminar la base de datos; no hay sincronización ni restauración propia de Lexi en este avance.
+El calendario y Repaso siguen pendientes. La racha diaria se calcula de forma dinámica extrayendo fechas únicas del historial. Exige victorias en días consecutivos para mantenerse activa y notifica visualmente en la pantalla de inicio si la práctica del día actual ya se completó o está en riesgo.
 
 ## Organización técnica
 
@@ -43,8 +43,9 @@ La racha, el calendario y Repaso siguen pendientes. Una partida en curso puede r
 - `data/progress/ProgressDao.kt`: inserción sin duplicados y consultas transaccionales.
 - `data/progress/ProgressDatabase.kt`: base de datos Room, versión 1, una instancia por proceso.
 - `data/progress/ProgressRepository.kt`: acceso al guardado y observación de cambios.
-- `ui/ProgressViewModel.kt`: estados de carga, guardado, error y reintento; sobrevive a la rotación.
+- `ui/ProgressViewModel.kt`: estados de carga, guardado, error, reintento y cálculo reactivo de la racha (StreakState) filtrando fechas anómalas; sobrevive a la rotación.
 - `ui/ProgressScreen.kt`: contadores y últimas partidas.
+- `ui/HomeScreen.kt`: consume el estado de la racha para mostrar el indicador de meta diaria.
 - `app/schemas/`: esquema exportado por Room para revisar futuras migraciones.
 
 Las rutas de código son relativas a `app/src/main/java/io/github/nyasanchez/lexi/`. Se añadieron Room 2.8.5, KSP 2.3.10 y Lifecycle 2.10.0. Las consultas se ejecutan mediante APIs suspendidas de Room; no se habilita el acceso a la base de datos en el hilo principal ni la recreación destructiva como sustituto de una migración.

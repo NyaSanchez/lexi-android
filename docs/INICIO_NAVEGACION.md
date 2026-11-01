@@ -4,12 +4,12 @@ Este documento conserva el registro de la etapa de interfaz. El siguiente avance
 
 ## Alcance del avance
 
-- Inicio con la identidad violeta de Lexi, una tarjeta de meta diaria y selección mediante dos opciones de radio.
+- Inicio con la identidad violeta de Lexi, una tarjeta de meta diaria que muestra la racha actual de forma dinámica y alerta si la práctica del día está en riesgo.
 - Definición en español para responder en inglés; definición en inglés para responder en español.
 - Nivel inicial fijo. El catálogo de niveles aún no está definido y por eso el campo no simula un desplegable.
 - Navegación inferior entre Inicio, Repaso y Progreso con Navigation Compose.
 - «Empezar» abre una ruta de práctica que recibe el modo elegido. Todavía no hay vocabulario; se muestra el estado vacío y se puede regresar.
-- Repaso y Progreso tienen estados vacíos que corresponden a una persona sin práctica registrada. No se muestran días de racha ni aciertos ficticios.
+- Repaso tiene un estado vacío. Progreso muestra el historial de partidas, contadores acumulados y la racha de días consecutivos actuales.
 - Selección del modo conservada con `rememberSaveable` al navegar, girar el dispositivo o recrearse la actividad por el sistema. No es todavía una preferencia persistente entre cierres voluntarios de la app.
 - Diseño desplazable para pantallas pequeñas, colores claros y oscuros, controles con etiquetas y opciones de radio accesibles.
 
@@ -62,6 +62,10 @@ Añade estados vacíos y adapta los colores al tema claro y oscuro.
 ```
 
 Añadir a la descripción únicamente las comprobaciones realmente realizadas. Después del commit, usar Push origin y revisar el registro en GitHub.
+
+## Inyección de progreso global
+
+El host de navegación (LexiApp.kt) ahora extrae el StreakState (que incluye el conteo de la racha y la validación de juego actual) observando el flujo reactivo desde el ProgressViewModel. Este estado se inyecta como parámetro obligatorio en HomeScreen y ProgressScreen, garantizando que toda la interfaz se actualice automáticamente en cuanto la base de datos local registre una nueva victoria.
 
 ## Referencias de implementación
 

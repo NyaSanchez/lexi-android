@@ -1,6 +1,6 @@
 # Lexi: guía de incorporación y contexto del equipo
 
-Actualizada el **30 de octubre de 2026**. Estado funcional de referencia: commit **727afe3**, `feat: guardar progreso local de práctica`.
+Actualizada el **31 de octubre de 2026**. Estado funcional de referencia: commit **11f5416**, `feat: guardar progreso local de práctica`.
 
 Repositorio compartido: [NyaSanchez/lexi-android](https://github.com/NyaSanchez/lexi-android). Rama principal: `main`. Esta guía es el punto de entrada para continuar sin necesitar el historial de conversaciones con el asistente.
 
@@ -69,7 +69,7 @@ Las versiones están en `gradle/libs.versions.toml`, los archivos Gradle y el Wr
 | Resultado | Victoria/derrota, traducción, ejemplos e intentos desplegables | Sin pronunciación |
 | Estado de pantalla | Conserva borrador e intentos al girar | No se garantiza continuar una partida tras cerrarla explícitamente |
 | Guardado | Resultados terminados en Room, confirmación y reintento | Datos locales, sin sincronización entre dispositivos |
-| Progreso | Totales e historial de hasta 20 partidas recientes | Sin calendario ni estadísticas diarias |
+| Progreso | Totales, racha actual e historial de hasta 20 partidas recientes | Sin calendario mensual |
 | Repaso | Pestaña y estado inicial | La práctica de repaso aún no está implementada |
 
 La app puede practicar y guardar sin una cuenta de usuario ni un servicio remoto. El historial pertenece a cada instalación; no viaja con los commits de Git.
@@ -93,7 +93,7 @@ La app puede practicar y guardar sin una cuenta de usuario ni un servicio remoto
 | CASA | COSA | Verde, rojo, verde, verde |
 | APPLE | PAPAL | Amarillo, amarillo, verde, rojo, amarillo |
 
-La futura meta diaria se completará con el primer acierto del día; más aciertos ese mismo día no sumarán días adicionales de racha. Una derrota no completará la meta. El cálculo todavía está pendiente.
+La meta diaria se completa con el primer acierto del día; múltiples aciertos el mismo día no inflan la racha. El cálculo extrae fechas únicas de la base de datos (ignorando horas y partidas futuras anómalas) para hacer la racha resistente a la manipulación del reloj del dispositivo. Los huecos de inactividad de más de un día reinician el contador a cero.
 
 ## 6. Dónde está cada parte
 
@@ -163,16 +163,16 @@ Comparar incrementos cuando ya haya historial. No borrar datos personales para c
 
 ## 8. Trabajo pendiente y orden sugerido
 
-| Prioridad | Trabajo | Qué decidir o comprobar antes de darlo por terminado |
-| --- | --- | --- |
-| Siguiente | Racha y meta diaria | Primer acierto del día; varios aciertos no suman días; derrotas no cuentan; definir huecos entre días, medianoche, zona horaria y cambios del reloj |
-| Después | Progreso diario/calendario | Definir qué indicadores se muestran y calcularlos con resultados reales |
-| Después | Repaso | Acordar qué palabras entran, orden, selección y efecto de sus partidas sobre progreso/meta |
-| Por acordar | Selección y niveles | Sustituir el recorrido fijo si se decide; definir niveles y criterios |
+| Prioridad      | Trabajo | Qué decidir o comprobar antes de darlo por terminado |
+|---| --- | --- |
+| Completado     | Racha y meta diaria | Primer acierto del día; varios aciertos no suman días; derrotas no cuentan; definir huecos entre días, medianoche, zona horaria y cambios del reloj |
+| Después        | Progreso diario/calendario | Definir qué indicadores se muestran y calcularlos con resultados reales |
+| Después        | Repaso | Acordar qué palabras entran, orden, selección y efecto de sus partidas sobre progreso/meta |
+| Por acordar    | Selección y niveles | Sustituir el recorrido fijo si se decide; definir niveles y criterios |
 | Antes de publicar | Vocabulario y accesibilidad | Revisar definiciones, ejemplos, tildes, contraste, tamaños de texto, TalkBack y pantallas pequeñas |
-| Por acordar | Audio y Ajustes | Determinar alcance y comportamiento; están sugeridos en las maquetas |
-| Por acordar | Recuperar partida cerrada | Definir si se guarda una partida incompleta y cómo se reanuda sin duplicar resultados |
-| Al final | Distribución en Google Play | Pruebas de distribución, firma, paquete de publicación, ficha y requisitos vigentes según las funciones reales |
+| Por acordar    | Audio y Ajustes | Determinar alcance y comportamiento; están sugeridos en las maquetas |
+| Por acordar    | Recuperar partida cerrada | Definir si se guarda una partida incompleta y cómo se reanuda sin duplicar resultados |
+| Al final       | Distribución en Google Play | Pruebas de distribución, firma, paquete de publicación, ficha y requisitos vigentes según las funciones reales |
 
 Propuesta de reparto para tres personas, **pendiente de acordarla**: la responsable continúa racha/meta; un integrante prepara Repaso después de definir sus reglas; otro revisa vocabulario y pruebas. Acordar un responsable por tarea y registrar archivos afectados antes de programar. No trabajar simultáneamente en el mismo bloque de navegación, guardado o Gradle sin coordinarse.
 
