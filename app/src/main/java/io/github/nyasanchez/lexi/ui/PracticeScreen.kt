@@ -38,6 +38,7 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
@@ -55,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.nyasanchez.lexi.R
 import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
+import io.github.nyasanchez.lexi.data.progress.PracticeSessionStore
 import io.github.nyasanchez.lexi.data.progress.SavedGame
 import java.time.ZoneId
 import java.util.UUID
@@ -74,24 +76,49 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
         PracticeEmptyScreen(mode, onGoBack)
         return
     }
-    var entryId by rememberSaveable(mode.id) { mutableStateOf(entries.first().id) }
+
+    val context = LocalContext.current
+    val store = remember { PracticeSessionStore(context) }
+
+    // Al abrir la práctica se continúa en la palabra donde se quedó la persona en este modo.
+    var entryId by rememberSaveable(mode.id) {
+        mutableStateOf(
+            store.load(mode.id)?.entryId?.takeIf { id -> entries.any { it.id == id } }
+                ?: entries.first().id
+        )
+    }
     val entry = entries.firstOrNull { it.id == entryId } ?: entries.first()
     val exercise = remember(entry, mode) { entry.exerciseFor(mode.answerLanguage) }
+
+    // Lo guardado solo vale si corresponde a la palabra actual.
+    fun saved() = store.load(mode.id)?.takeIf { it.entryId == entry.id }
+
     // Guardar solo IDs, texto y hasta seis respuestas; el motor reconstruye las pistas.
     var attempts by rememberSaveable(mode.id, entry.id, stateSaver = AttemptsSaver) {
-        mutableStateOf(emptyList<String>())
+        mutableStateOf(saved()?.attempts ?: emptyList<String>())
     }
     var draft by rememberSaveable(mode.id, entry.id) { mutableStateOf("") }
     var errorName by rememberSaveable(mode.id, entry.id) { mutableStateOf<String?>(null) }
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
     val game = remember(exercise, attempts) {
-        // Una actualización del catálogo puede invalidar el estado transitorio antiguo.
+        // Una actualización del catálogo puede invalidar el estado guardado antiguo.
         runCatching { WordGame.restore(exercise, attempts) }.getOrElse { WordGame(exercise) }
     }
     val state = game.state
-    val sessionId = rememberSaveable(mode.id, entry.id) { UUID.randomUUID().toString() }
-    var completedAt by rememberSaveable(mode.id, entry.id) { mutableLongStateOf(0L) }
-    var completedZone by rememberSaveable(mode.id, entry.id) { mutableStateOf("") }
+    val sessionId = rememberSaveable(mode.id, entry.id) {
+        saved()?.sessionId ?: UUID.randomUUID().toString()
+    }
+    var completedAt by rememberSaveable(mode.id, entry.id) { mutableLongStateOf(saved()?.completedAt ?: 0L) }
+    var completedZone by rememberSaveable(mode.id, entry.id) { mutableStateOf(saved()?.zoneId ?: "") }
+
+    // Cada cambio de palabra o de intentos queda guardado para poder continuar después.
+    LaunchedEffect(mode.id, entry.id, attempts, sessionId, completedAt, completedZone) {
+        store.save(
+            mode.id,
+            PracticeSessionStore.Session(entry.id, attempts, sessionId, completedAt, completedZone),
+        )
+    }
+
     val completedGame = remember(state, sessionId, completedAt, completedZone) {
         if (state.status != GameStatus.IN_PROGRESS && completedAt > 0) {
             SavedGame.from(state, sessionId, completedAt, completedZone)
@@ -113,14 +140,10 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
         focus.clearFocus()
         onGoBack()
     }
+    // Salir ya no pierde la partida; solo se avisa si el resultado no pudo guardarse.
     fun requestExit() {
         if (saveStatus == SaveStatus.SAVING) return
-        if (saveStatus == SaveStatus.ERROR ||
-            (state.status == GameStatus.IN_PROGRESS && (state.attemptsUsed > 0 || draft.isNotBlank()))) {
-            showExitDialog = true
-        } else {
-            leave()
-        }
+        if (saveStatus == SaveStatus.ERROR) showExitDialog = true else leave()
     }
     BackHandler { requestExit() }
 
@@ -160,8 +183,8 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
     if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false },
-            title = { Text(stringResource(if (saveStatus == SaveStatus.ERROR) R.string.leave_unsaved_title else R.string.leave_game_title)) },
-            text = { Text(stringResource(if (saveStatus == SaveStatus.ERROR) R.string.leave_unsaved_description else R.string.leave_game_description)) },
+            title = { Text(stringResource(R.string.leave_unsaved_title)) },
+            text = { Text(stringResource(R.string.leave_unsaved_description)) },
             confirmButton = {
                 TextButton(onClick = { showExitDialog = false; leave() }) {
                     Text(stringResource(R.string.leave_game))
@@ -299,6 +322,6 @@ private fun PracticePreview() {
     val exercise = requireNotNull(LocalVocabularyRepository().findById("house")).exerciseFor(PracticeMode.ENGLISH.answerLanguage)
     LexiTheme {
         PracticeContent(PracticeMode.ENGLISH, WordGame.restore(exercise, listOf("SHARE")).state,
-            1, 30, "", null, {}, {}, {}, {})
+            1, 100, "", null, {}, {}, {}, {})
     }
 }
