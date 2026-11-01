@@ -97,6 +97,8 @@
     <string name="history_outcome">%1$s · %2$s</string>
     <string name="history_won">Acierto</string>
     <string name="history_lost">Sin acierto</string>
+    <string name="daily_streak">¡Llevas una racha de %1$d días!</string>
+    <string name="daily_streak_title">Racha actual</string>
     <plurals name="history_attempts">
         <item quantity="one">%1$d intento utilizado</item>
         <item quantity="other">%1$d intentos utilizados</item>

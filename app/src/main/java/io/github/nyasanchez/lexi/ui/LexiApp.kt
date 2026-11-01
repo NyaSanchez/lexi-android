@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.nyasanchez.lexi.R
 
+
 private enum class MainDestination(
     val route: String,
     @param:StringRes val label: Int,
@@ -49,6 +50,7 @@ fun LexiApp() {
     val progressModel: ProgressViewModel = viewModel()
     val progress by progressModel.progress.collectAsStateWithLifecycle()
     val currentSave by progressModel.save.collectAsStateWithLifecycle()
+    val currentStreakState by progressModel.streak.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: MainDestination.HOME.route
@@ -104,6 +106,8 @@ fun LexiApp() {
             composable(MainDestination.HOME.route) {
                 HomeScreen(
                     selectedMode = selectedMode,
+                    streak = currentStreakState.count,
+                    completedToday = currentStreakState.completedToday,
                     onModeSelected = { selectedModeId = it.id },
                     onStart = {
                         navController.navigate("practice/${selectedMode.id}") {
@@ -116,7 +120,7 @@ fun LexiApp() {
                 ReviewScreen(onGoHome = ::goHome)
             }
             composable(MainDestination.PROGRESS.route) {
-                ProgressScreen(state = progress, onRetry = progressModel::reload, onGoHome = ::goHome)
+                ProgressScreen(state = progress, streak = currentStreakState.count, onRetry = progressModel::reload, onGoHome = ::goHome)
             }
             composable(
                 route = "practice/{mode}",

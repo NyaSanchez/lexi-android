@@ -39,9 +39,11 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
-fun ProgressScreen(state: ProgressUiState, onRetry: () -> Unit, onGoHome: () -> Unit) {
+fun ProgressScreen(state: ProgressUiState, streak: Int, onRetry: () -> Unit, onGoHome: () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
             modifier = Modifier.widthIn(max = 560.dp).fillMaxSize(),
@@ -72,7 +74,7 @@ fun ProgressScreen(state: ProgressUiState, onRetry: () -> Unit, onGoHome: () -> 
                     if (state.data.summary.total == 0L) {
                         item { EmptyState(R.drawable.ic_book, stringResource(R.string.history_empty_title), stringResource(R.string.history_empty_description)) }
                     } else {
-                        item { ProgressTotals(state.data.summary) }
+                        item { ProgressTotals(state.data.summary, streak) }
                         item {
                             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Text(stringResource(R.string.recent_games), style = MaterialTheme.typography.titleLarge,
@@ -95,10 +97,19 @@ fun ProgressScreen(state: ProgressUiState, onRetry: () -> Unit, onGoHome: () -> 
 }
 
 @Composable
-private fun ProgressTotals(summary: ProgressSummary) {
+private fun ProgressTotals(summary: ProgressSummary, streak: Int) {
     Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.primaryContainer) {
         Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text(stringResource(R.string.progress_summary), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+
+            // 1. Agregamos SOLO UNA VEZ la racha actual hasta arriba
+            Row(Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
+                horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.daily_streak_title), Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                Text(streak.toString(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            }
+
+            // 2. Restauramos la lista original que tenías para los otros 4 totales
             listOf(R.string.total_games to summary.total, R.string.total_wins to summary.wins,
                 R.string.total_losses to summary.losses, R.string.unique_words to summary.uniqueWords).forEach { (label, count) ->
                 Row(Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
@@ -107,6 +118,7 @@ private fun ProgressTotals(summary: ProgressSummary) {
                     Text(count.toString(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 }
             }
+
             Text(stringResource(R.string.unique_words_description), style = MaterialTheme.typography.bodySmall)
         }
     }

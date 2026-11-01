@@ -31,12 +31,14 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.github.nyasanchez.lexi.R
+import io.github.nyasanchez.lexi.R  
 import io.github.nyasanchez.lexi.ui.theme.LexiTheme
 
 @Composable
 fun HomeScreen(
     selectedMode: PracticeMode,
+    streak: Int,
+    completedToday: Boolean,
     onModeSelected: (PracticeMode) -> Unit,
     onStart: () -> Unit,
 ) {
@@ -48,7 +50,7 @@ fun HomeScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.semantics { heading() },
         )
-        DailyGoalCard()
+        DailyGoalCard(streak = streak, completedToday = completedToday)
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
                 text = stringResource(R.string.practice_mode_title),
@@ -92,7 +94,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun DailyGoalCard() {
+private fun DailyGoalCard(streak : Int, completedToday: Boolean) {
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
@@ -107,7 +109,12 @@ private fun DailyGoalCard() {
             Icon(painterResource(R.drawable.ic_flame), contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(44.dp))
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(stringResource(R.string.daily_practice_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.daily_goal), style = MaterialTheme.typography.bodyMedium)
+                val streakText = when {
+                    completedToday && streak > 0 -> stringResource(R.string.daily_streak, streak)
+                    !completedToday && streak > 0 -> "¡Racha en riesgo! " + stringResource(R.string.daily_goal)
+                    else -> stringResource(R.string.daily_goal)
+                }
+                Text(streakText, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -148,6 +155,12 @@ private fun ModeOption(mode: PracticeMode, selected: Boolean, onClick: () -> Uni
 @Composable
 private fun HomePreview() {
     LexiTheme {
-        HomeScreen(selectedMode = PracticeMode.ENGLISH, onModeSelected = {}, onStart = {})
+        HomeScreen(
+            selectedMode = PracticeMode.ENGLISH,
+            streak = 0,
+            completedToday = false, // <- Agrega esta línea
+            onModeSelected = {},
+            onStart = {}
+        )
     }
 }

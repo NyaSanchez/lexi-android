@@ -25,13 +25,15 @@ interface ProgressDao {
     @Query("SELECT COUNT(*) FROM completed_games")
     fun observeCount(): Flow<Long>
 
-    @Query("""
+    @Query(
+        """
         SELECT COUNT(*) AS total,
             COALESCE(SUM(CASE WHEN won = 1 THEN 1 ELSE 0 END), 0) AS wins,
             COALESCE(SUM(CASE WHEN won = 0 THEN 1 ELSE 0 END), 0) AS losses,
             COUNT(DISTINCT CASE WHEN won = 1 THEN entryId ELSE NULL END) AS uniqueWords
         FROM completed_games
-    """)
+    """
+    )
     suspend fun summary(): ProgressSummary
 
     @Query("SELECT * FROM completed_games ORDER BY completedAt DESC, sessionId ASC LIMIT 20")
@@ -39,4 +41,7 @@ interface ProgressDao {
 
     @Transaction
     suspend fun snapshot(): ProgressSnapshot = ProgressSnapshot(summary(), recent())
+
+    @Query("SELECT DISTINCT localDate FROM completed_games WHERE won = 1 ORDER BY localDate DESC")
+    fun observeWinningDates(): Flow<List<String>>
 }
