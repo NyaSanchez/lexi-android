@@ -10,13 +10,13 @@ Aplicación Android con Kotlin y Jetpack Compose. Incluye Inicio, selección de 
 
 La selección del modo se conserva al navegar y al recrearse la actividad. «Empezar» abre la práctica con el idioma seleccionado. Progreso muestra los resultados guardados; Repaso todavía conserva su estado inicial.
 
-El banco local contiene 30 pares de palabras con definiciones y ejemplos en ambos idiomas. La pantalla de práctica ya utiliza ese catálogo y el motor de partida: muestra la definición, un tablero de seis filas y un campo para responder con el teclado del teléfono.
+El banco local contiene 100 pares de palabras con definiciones y ejemplos en ambos idiomas. La pantalla de práctica utiliza ese catálogo y el motor de partida: muestra la definición y un tablero de seis filas. Se escribe directamente en las casillas de la fila activa y se pulsa «Comprobar» para ver las pistas en esa misma fila.
 
-Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, se abre una vista de resultado con la solución, su traducción y una frase de ejemplo en ambos idiomas. Se pueden revisar los intentos y pasar a la siguiente palabra. El estado de la partida y el borrador se conservan al recrearse la actividad.
+Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, el tablero conserva los colores finales y «Ver resultado» abre la solución, su traducción y una frase de ejemplo en ambos idiomas. Se pueden revisar los intentos y pasar a la siguiente palabra. El estado de la partida y el borrador se conservan al recrearse la actividad.
 
 Las partidas terminadas se guardan en una base de datos local de Room. Progreso muestra el total de partidas, aciertos, derrotas, palabras distintas acertadas y los últimos 20 resultados. Un identificador único impide duplicar una partida al recuperar la pantalla. La vista de resultado confirma cuándo quedó guardada y permite reintentar si falla.
 
-La selección de palabras sigue el orden del catálogo y vuelve al principio después de las treinta. Salir al inicio termina esa sesión; el cálculo de racha y el repaso se implementarán en los siguientes avances. El historial guardado permanece al cerrar la app; una partida sin terminar sigue siendo transitoria. Las partidas de versiones anteriores, que no se almacenaban, no se inventan ni reconstruyen.
+La selección de palabras sigue el orden del catálogo y vuelve al principio después de las cien. Los avances del equipo incorporaron racha y meta diaria, y recuperación de la palabra y los intentos aceptados por modo al volver a la práctica. El borrador sin enviar se conserva al girar, pero no se guarda en la sesión persistente. El historial terminado permanece al cerrar la app. Repaso sigue pendiente.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
@@ -61,6 +61,7 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 - [Vocabulario inicial](docs/VOCABULARIO_INICIAL.md): catálogo, reglas de edición y pruebas de los datos.
 - [Motor de partida](docs/MOTOR_PARTIDA.md): validación, seis intentos y letras repetidas.
 - [Partida en el teléfono](docs/PARTIDA.md): tablero, teclado y recuperación del estado.
+- [Entrada en el tablero](docs/ENTRADA_EN_TABLERO.md): escritura en casillas, corrección de letras, colores y preparación del PR.
 - [Resultado y aprendizaje](docs/RESULTADO_APRENDIZAJE.md): ejemplos bilingües y revisión de intentos.
 - [Guardado de progreso](docs/GUARDADO_PROGRESO.md): persistencia, contadores, errores y comprobación del avance actual.
 

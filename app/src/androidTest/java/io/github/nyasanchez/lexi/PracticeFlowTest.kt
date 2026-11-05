@@ -20,6 +20,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextReplacement
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.github.nyasanchez.lexi.ui.PracticeMode
 import java.io.File
 import org.junit.Rule
 import org.junit.Test
@@ -27,10 +28,11 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class PracticeFlowTest {
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule(order = 0) val sessions = PracticeSessionRule()
+    @get:Rule(order = 1) val compose = createAndroidComposeRule<MainActivity>()
 
     private fun start(spanish: Boolean = false) {
-        if (spanish) compose.onNodeWithText("Definition in English").performScrollTo().performClick()
+        if (spanish) compose.onNodeWithText(compose.activity.getString(PracticeMode.SPANISH.title)).performScrollTo().performClick()
         compose.onNodeWithText("Empezar").performScrollTo().performClick()
     }
 
@@ -43,6 +45,10 @@ class PracticeFlowTest {
         input(text)
         compose.onNode(hasSetTextAction()).performImeAction()
         compose.waitForIdle()
+        if (compose.onAllNodes(hasText("Ver resultado")).fetchSemanticsNodes().isNotEmpty()) {
+            show("Ver resultado")
+            compose.onNodeWithText("Ver resultado").performClick()
+        }
     }
 
     private fun show(text: String) {
@@ -155,17 +161,14 @@ class PracticeFlowTest {
     }
 
     @Test
-    fun exitCanBeCancelledWithoutLosingTheAttempt() {
+    fun leavingAndReturningRestoresTheAttempt() {
         start()
         submit("SHARE")
         compose.onNodeWithTag("practice_list").performScrollToNode(hasContentDescription("Volver al inicio"))
         compose.onNodeWithContentDescription("Volver al inicio").performClick()
-        compose.onNodeWithText("¿Salir de esta partida?").assertIsDisplayed()
-        compose.onNodeWithText("Seguir jugando").performClick()
-        show("Intentos: 1 de 6")
-        compose.onNodeWithTag("practice_list").performScrollToNode(hasContentDescription("Volver al inicio"))
-        compose.onNodeWithContentDescription("Volver al inicio").performClick()
-        compose.onNodeWithText("Salir").performClick()
         compose.onNodeWithText("Tu práctica de hoy").assertIsDisplayed()
+        start()
+        show("Intentos: 1 de 6")
+        compose.onNodeWithContentDescription("Intento 1: SHARE", substring = true).assertExists()
     }
 }
