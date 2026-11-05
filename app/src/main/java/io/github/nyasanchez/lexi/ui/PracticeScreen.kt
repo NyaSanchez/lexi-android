@@ -16,14 +16,14 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,8 +50,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.nyasanchez.lexi.R
@@ -97,8 +95,10 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
     var attempts by rememberSaveable(mode.id, entry.id, stateSaver = AttemptsSaver) {
         mutableStateOf(saved()?.attempts ?: emptyList<String>())
     }
-    var draft by rememberSaveable(mode.id, entry.id) { mutableStateOf("") }
+    val input = rememberSaveable(mode.id, entry.id, saver = TextFieldState.Saver) { TextFieldState() }
+    var showResult by rememberSaveable(mode.id, entry.id) { mutableStateOf(false) }
     var errorName by rememberSaveable(mode.id, entry.id) { mutableStateOf<String?>(null) }
+    var rejectedDraft by rememberSaveable(mode.id, entry.id) { mutableStateOf<String?>(null) }
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
     val game = remember(exercise, attempts) {
         // Una actualización del catálogo puede invalidar el estado guardado antiguo.
@@ -152,23 +152,27 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
         state = state,
         position = entries.indexOf(entry) + 1,
         total = entries.size,
-        draft = draft,
-        error = errorName?.let { GuessError.valueOf(it) },
-        onDraftChange = { draft = it.take(128); errorName = null },
+        input = input,
+        error = errorName?.takeIf { rejectedDraft == input.text.toString() }?.let { GuessError.valueOf(it) },
+        showResult = showResult,
+        onShowResult = { showResult = true },
         onSubmit = {
-            when (val result = game.submit(draft)) {
+            when (val result = game.submit(input.text.toString())) {
                 is SubmissionResult.Accepted -> {
                     if (result.state.status != GameStatus.IN_PROGRESS) {
                         completedAt = System.currentTimeMillis()
                         completedZone = ZoneId.systemDefault().id
                     }
                     attempts = result.state.guesses.map { it.word }
-                    draft = ""
+                    input.clearText()
                     errorName = null
                     keyboard?.hide()
                     focus.clearFocus()
                 }
-                is SubmissionResult.Rejected -> errorName = result.error.name
+                is SubmissionResult.Rejected -> {
+                    rejectedDraft = input.text.toString()
+                    errorName = result.error.name
+                }
             }
         },
         onNext = {
@@ -205,20 +209,22 @@ private fun PracticeContent(
     state: GameState,
     position: Int,
     total: Int,
-    draft: String,
+    input: TextFieldState,
     error: GuessError?,
-    onDraftChange: (String) -> Unit,
+    showResult: Boolean,
+    onShowResult: () -> Unit,
     onSubmit: () -> Unit,
     onNext: () -> Unit,
     onGoBack: () -> Unit,
     saveStatus: SaveStatus = SaveStatus.IDLE,
     onRetrySave: () -> Unit = {},
 ) {
-    if (state.status != GameStatus.IN_PROGRESS) {
+    if (state.status != GameStatus.IN_PROGRESS && showResult) {
         PracticeResultScreen(state, position, total, onNext, onGoBack, saveStatus, onRetrySave)
         return
     }
     val listState = rememberLazyListState()
+    val errorText = guessErrorText(mode, state.wordLength, error)
     // Al enviar una respuesta incorrecta, volver a las pistas; al cambiar de palabra, a la definición.
     LaunchedEffect(state.entryId, state.attemptsUsed) {
         when {
@@ -263,50 +269,45 @@ private fun PracticeContent(
                     Text(stringResource(R.string.attempts_used, state.attemptsUsed, WordGame.MAX_ATTEMPTS),
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-                    GuessBoard(state)
+                    if (state.status == GameStatus.IN_PROGRESS) {
+                        Text(stringResource(R.string.board_input_hint), style = MaterialTheme.typography.bodySmall)
+                    }
+                    GuessBoard(state, input, errorText, onSubmit)
+                    if (state.status == GameStatus.IN_PROGRESS) {
+                        GuessSubmit(mode, state.wordLength, errorText, onSubmit)
+                    } else {
+                        Text(stringResource(if (state.status == GameStatus.WON) R.string.game_won else R.string.game_lost),
+                            style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+                        Button(onClick = onShowResult, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+                            Text(stringResource(R.string.view_result))
+                        }
+                    }
                 }
             }
             item { LetterLegend() }
-            item {
-                GuessEntry(mode, state.wordLength, draft, error, onDraftChange, onSubmit)
-            }
         }
     }
 }
 
 @Composable
-private fun GuessEntry(
-    mode: PracticeMode, length: Int, draft: String, error: GuessError?,
-    onDraftChange: (String) -> Unit, onSubmit: () -> Unit,
-) {
-    val errorText = when (error) {
+private fun guessErrorText(mode: PracticeMode, length: Int, error: GuessError?): String? = when (error) {
         GuessError.EMPTY -> stringResource(R.string.guess_empty)
         GuessError.WRONG_LENGTH -> pluralStringResource(R.plurals.guess_wrong_length, length, length)
         GuessError.INVALID_CHARACTERS -> stringResource(
             if (mode == PracticeMode.ENGLISH) R.string.guess_english_letters else R.string.guess_spanish_letters)
         GuessError.GAME_FINISHED -> stringResource(R.string.guess_finished)
         null -> null
-    }
+}
+
+@Composable
+private fun GuessSubmit(mode: PracticeMode, length: Int, errorText: String?, onSubmit: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OutlinedTextField(
-            value = draft,
-            onValueChange = onDraftChange,
-            label = { Text(stringResource(R.string.your_answer)) },
-            supportingText = {
-                Text(errorText ?: pluralStringResource(
-                    if (mode == PracticeMode.ENGLISH) R.plurals.guess_hint_english else R.plurals.guess_hint_spanish, length, length),
-                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-            },
-            isError = error != null,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Characters,
-                autoCorrectEnabled = false,
-                imeAction = ImeAction.Done,
-            ),
-            keyboardActions = KeyboardActions(onDone = { onSubmit() }),
-            modifier = Modifier.fillMaxWidth(),
-        )
+        Text(errorText ?: pluralStringResource(
+            if (mode == PracticeMode.ENGLISH) R.plurals.guess_hint_english else R.plurals.guess_hint_spanish, length, length),
+            style = MaterialTheme.typography.bodySmall,
+            color = if (errorText != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
         Button(onClick = onSubmit, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
             shape = RoundedCornerShape(14.dp)) {
             Text(stringResource(R.string.check_answer), fontWeight = FontWeight.Bold)
@@ -322,6 +323,6 @@ private fun PracticePreview() {
     val exercise = requireNotNull(LocalVocabularyRepository().findById("house")).exerciseFor(PracticeMode.ENGLISH.answerLanguage)
     LexiTheme {
         PracticeContent(PracticeMode.ENGLISH, WordGame.restore(exercise, listOf("SHARE")).state,
-            1, 100, "", null, {}, {}, {}, {})
+            1, 100, rememberTextFieldState("HOU"), null, false, {}, {}, {}, {})
     }
 }

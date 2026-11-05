@@ -2,6 +2,8 @@
 
 Actualizada el **31 de octubre de 2026**. Estado funcional de referencia: commit **11f5416**, `feat: guardar progreso local de práctica`.
 
+**Actualización del 4 de noviembre de 2026:** `main` en `e11abf9` incorpora racha/meta diaria, 100 palabras y continuación de la sesión, además de documentación de privacidad y pruebas manuales. La rama `feat/respuesta-en-cuadros` añade la [entrada directamente en el tablero](ENTRADA_EN_TABLERO.md). Las tablas anteriores a esta actualización conservan contexto histórico; consultar el README y esa documentación para el estado de esta rama.
+
 Repositorio compartido: [NyaSanchez/lexi-android](https://github.com/NyaSanchez/lexi-android). Rama principal: `main`. Esta guía es el punto de entrada para continuar sin necesitar el historial de conversaciones con el asistente.
 
 ## 1. Qué estamos construyendo
