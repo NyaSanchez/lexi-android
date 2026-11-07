@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import io.github.nyasanchez.lexi.R
 import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLanguage
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
+import io.github.nyasanchez.lexi.domain.level.LevelStatus
 import io.github.nyasanchez.lexi.domain.game.GameState
 import io.github.nyasanchez.lexi.domain.game.GameStatus
 import io.github.nyasanchez.lexi.domain.game.WordGame
@@ -64,6 +66,9 @@ internal fun PracticeResultScreen(
     onGoBack: () -> Unit,
     saveStatus: SaveStatus = SaveStatus.IDLE,
     onRetrySave: () -> Unit = {},
+    levelStatus: LevelStatus? = null,
+    nextLevel: VocabularyLevel? = null,
+    onSwitchLevel: (VocabularyLevel) -> Unit = {},
 ) {
     require(state.status != GameStatus.IN_PROGRESS)
     val solution = requireNotNull(state.solution)
@@ -171,6 +176,20 @@ internal fun PracticeResultScreen(
                     }
                 }
             }
+            // La meta del 70 % abre el siguiente nivel, pero nadie está obligado a pasar: se puede seguir aquí.
+            if (state.status == GameStatus.WON && levelStatus != null && levelStatus.goalReached &&
+                (nextLevel != null || levelStatus.completed)
+            ) {
+                item(key = "level_offer") {
+                    LevelOfferCard(
+                        status = levelStatus,
+                        next = nextLevel,
+                        actionsEnabled = saveStatus == SaveStatus.SAVED || saveStatus == SaveStatus.IDLE,
+                        onSwitchLevel = onSwitchLevel,
+                        onKeepGoing = onNext,
+                    )
+                }
+            }
             item(key = "actions") {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = onNext, enabled = saveStatus == SaveStatus.SAVED || saveStatus == SaveStatus.IDLE,
@@ -183,6 +202,56 @@ internal fun PracticeResultScreen(
                     TextButton(onClick = onGoBack, enabled = saveStatus != SaveStatus.SAVING, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.back_home))
                     }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Aparece al acertar una palabra cuando el nivel ya alcanzó la meta de avance. Deja elegir entre
+ * pasar al siguiente nivel o seguir en este hasta acertar todas sus palabras.
+ */
+@Composable
+private fun LevelOfferCard(
+    status: LevelStatus,
+    next: VocabularyLevel?,
+    actionsEnabled: Boolean,
+    onSwitchLevel: (VocabularyLevel) -> Unit,
+    onKeepGoing: () -> Unit,
+) {
+    val levelName = stringResource(status.level.labelRes)
+    val nextName = next?.let { stringResource(it.labelRes) }
+    val title = stringResource(if (status.completed) R.string.level_done_title else R.string.level_goal_title, levelName)
+    val description = when {
+        status.completed && nextName != null -> stringResource(R.string.level_done_with_next_description, status.total, nextName)
+        status.completed -> stringResource(R.string.level_done_description, status.total)
+        else -> stringResource(R.string.level_goal_description, status.won, status.total, nextName.orEmpty())
+    }
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                modifier = Modifier.semantics { heading() })
+            Text(description, style = MaterialTheme.typography.bodyLarge)
+            if (next != null) {
+                Button(
+                    onClick = { onSwitchLevel(next) },
+                    enabled = actionsEnabled,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Text(stringResource(R.string.level_go_next, nextName.orEmpty()), fontWeight = FontWeight.Bold)
+                }
+            }
+            // Seguir en el mismo nivel es la acción de «Siguiente palabra»; se repite aquí para que la elección sea explícita.
+            if (!status.completed) {
+                TextButton(onClick = onKeepGoing, enabled = actionsEnabled, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.level_keep_going, levelName))
                 }
             }
         }
