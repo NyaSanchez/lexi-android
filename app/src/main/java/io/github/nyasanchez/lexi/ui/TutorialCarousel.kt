@@ -23,7 +23,6 @@ import io.github.nyasanchez.lexi.R
 fun TutorialCarousel(onDismiss: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = { 3 })
 
-    // Fondo adaptable al tema (claro u oscuro) en lugar de ser totalmente negro
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +43,6 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // El Carrusel nativo
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
@@ -54,7 +52,7 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                 when (page) {
                     0 -> TutorialPage(
                         title = "Elige tu práctica",
-                        description = "1. Selecciona tu modo de juego preferido.\n\n2. Haz clic en 'Empezar' para iniciar la partida.\n\nNOTA. Cada modo es independiente al otro.",
+                        description = "1. Selecciona tu modo de juego preferido.\n\n2. Haz clic en 'Empezar' para iniciar tu sesión.",
                         iconRes = R.drawable.ic_book
                     )
                     1 -> TutorialPage(
@@ -72,7 +70,6 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Indicadores de página (los puntitos)
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -95,7 +92,6 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón para cerrar el tutorial
             Button(
                 onClick = onDismiss,
                 modifier = Modifier
@@ -108,9 +104,8 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
             }
         }
     }
-}
+} // <- Esta es la llave que seguramente faltaba
 
-// Componente reutilizable para cada tarjeta del tutorial
 @Composable
 fun TutorialPage(title: String, description: String, iconRes: Int) {
     Surface(
