@@ -21,7 +21,7 @@ import io.github.nyasanchez.lexi.R
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialCarousel(onDismiss: () -> Unit) {
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    val pagerState = rememberPagerState(pageCount = { 5 })
 
     Box(
         modifier = Modifier
@@ -56,14 +56,24 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                         iconRes = R.drawable.ic_book
                     )
                     1 -> TutorialPage(
+                        title = "Niveles de Dificultad",
+                        description = "1. Mientras más juegues, estarás desbloqueando niveles de dificultad.\n\n2. Los niveles se separan en: A1, A2, B1, B2, C1 y C2. ¡Completa todos!",
+                        iconRes = R.drawable.ic_book
+                    )
+                    2 -> TutorialPage(
                         title = "Adivina la palabra",
                         description = "Escribe la palabra correcta. Los colores te indicarán si las letras están en la posición adecuada.",
                         iconRes = R.drawable.ic_progress
                     )
-                    2 -> TutorialPage(
+                    3 -> TutorialPage(
                         title = "Mantén tu racha",
                         description = "Completa tu práctica diaria para sumar días a tu racha de estudio. ¡No te rindas!",
                         iconRes = R.drawable.ic_flame
+                    )
+                    4 -> TutorialPage(
+                        title = "Botón de Actualizaciones",
+                        description = "En la parte superior derecha de la pantalla, aparecerá un símbolo que al seleccionar te mencionará todas las actualizaciones de la última versión.",
+                        iconRes = R.drawable.ic_warning_update
                     )
                 }
             }
@@ -74,7 +84,8 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                repeat(3) { iteration ->
+                // Cambia el repeat(3) por esto:
+                repeat(pagerState.pageCount) { iteration ->
                     val color = if (pagerState.currentPage == iteration) {
                         MaterialTheme.colorScheme.primary
                     } else {
@@ -99,12 +110,12 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                     .height(56.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
-                val buttonText = if (pagerState.currentPage == 2) "¡Empezar a jugar!" else "Omitir tutorial"
+                val buttonText = if (pagerState.currentPage == 4) "¡Empezar a jugar!" else "Omitir tutorial"
                 Text(text = buttonText, style = MaterialTheme.typography.titleMedium)
             }
         }
     }
-} // <- Esta es la llave que seguramente faltaba
+}
 
 @Composable
 fun TutorialPage(title: String, description: String, iconRes: Int) {
