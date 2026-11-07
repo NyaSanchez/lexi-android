@@ -141,3 +141,9 @@ settings.gradle.kts
 El vocabulario y el motor de partida están separados de la interfaz y no dependen de un teléfono o emulador para ejecutar sus pruebas. Los informes se generan en `app/build/reports/tests/testDebugUnitTest/index.html`.
 
 Las pruebas de pantalla sí necesitan un dispositivo desbloqueado o un emulador. Se ejecutan con `./gradlew.bat :app:connectedDebugAndroidTest`; realizan partidas de prueba y recrean la actividad.
+
+## Novedades de Interfaz
+*   **Tutorial Interactivo Nativo:** Implementación de un carrusel de bienvenida (Onboarding) utilizando `HorizontalPager` de Jetpack Compose Foundation.
+    *   **Renderizado Nativo:** Construido íntegramente con componentes Composable (`Surface`, `Icon`, `Text`), eliminando la dependencia de imágenes estáticas pesadas y reduciendo el tamaño del AAB final.
+    *   **Diseño Adaptable (Dark/Light Mode):** Utiliza los tokens de color de `MaterialTheme` (`surfaceVariant`, `primary`) para adaptarse automáticamente a las preferencias del sistema del usuario.
+    *   **Lógica Condicional por Racha:** Integrado en el `HomeScreen` mediante *State Hoisting*. El tutorial solo se activa si la base de datos (Room) reporta una racha de 0 días, y maneja un estado temporal en memoria (`rememberSaveable`) para no interrumpir la navegación durante la misma sesión tras ser omitido.
