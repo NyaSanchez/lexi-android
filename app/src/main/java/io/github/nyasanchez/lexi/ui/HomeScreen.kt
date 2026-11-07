@@ -39,6 +39,12 @@ import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
 import io.github.nyasanchez.lexi.domain.level.LevelRules
 import io.github.nyasanchez.lexi.domain.level.LevelStatus
 import io.github.nyasanchez.lexi.ui.theme.LexiTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 
 @Composable
 fun HomeScreen(
@@ -51,34 +57,28 @@ fun HomeScreen(
     onLevelSelected: (VocabularyLevel) -> Unit,
     onStart: () -> Unit,
 ) {
-    ScreenColumn {
-        LexiBrand()
-        Text(
-            text = stringResource(R.string.home_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.semantics { heading() },
-        )
-        DailyGoalCard(streak = streak, completedToday = completedToday)
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    // 1. Variable local para saber si el usuario ya cerró el tutorial hoy
+    var hasDismissedTutorial by rememberSaveable { mutableStateOf(false) }
+
+    // 2. Lógica para mostrarlo: racha en 0 y no haberlo cerrado
+    val shouldShowTutorial = streak == 0 && !hasDismissedTutorial
+
+    // 3. Box principal para poder encimar el tutorial
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        // --- TU INTERFAZ ORIGINAL CON LOS NIVELES NUEVOS ---
+        ScreenColumn {
+            LexiBrand()
             Text(
-                text = stringResource(R.string.practice_mode_title),
-                style = MaterialTheme.typography.titleLarge,
+                text = stringResource(R.string.home_title),
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
+                modifier = Modifier.semantics { heading() },
             )
-            Column(
-                modifier = Modifier.selectableGroup(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                PracticeMode.entries.forEach { mode ->
-                    ModeOption(mode = mode, selected = selectedMode == mode, onClick = { onModeSelected(mode) })
-                }
-            }
-        }
-        if (levels.isNotEmpty()) {
+            DailyGoalCard(streak = streak, completedToday = completedToday)
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = stringResource(R.string.level_title),
+                    text = stringResource(R.string.practice_mode_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                 )
@@ -86,25 +86,49 @@ fun HomeScreen(
                     modifier = Modifier.selectableGroup(),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    levels.forEachIndexed { index, status ->
-                        LevelOption(
-                            status = status,
-                            previous = levels.getOrNull(index - 1),
-                            selected = status.level == selectedLevel,
-                            onClick = { onLevelSelected(status.level) },
-                        )
+                    PracticeMode.entries.forEach { mode ->
+                        ModeOption(mode = mode, selected = selectedMode == mode, onClick = { onModeSelected(mode) })
                     }
                 }
             }
+            if (levels.isNotEmpty()) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = stringResource(R.string.level_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Column(
+                        modifier = Modifier.selectableGroup(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        levels.forEachIndexed { index, status ->
+                            LevelOption(
+                                status = status,
+                                previous = levels.getOrNull(index - 1),
+                                selected = status.level == selectedLevel,
+                                onClick = { onLevelSelected(status.level) },
+                            )
+                        }
+                    }
+                }
+            }
+            Button(
+                onClick = onStart,
+                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+                shape = RoundedCornerShape(14.dp),
+            ) {
+                Text(stringResource(R.string.start_practice), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.size(12.dp))
+                Icon(painterResource(R.drawable.ic_arrow_forward), contentDescription = null)
+            }
         }
-        Button(
-            onClick = onStart,
-            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            Text(stringResource(R.string.start_practice), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.size(12.dp))
-            Icon(painterResource(R.drawable.ic_arrow_forward), contentDescription = null)
+
+        // --- LA CAPA DEL TUTORIAL SUPERPUESTA ---
+        if (shouldShowTutorial) {
+            TutorialCarousel(
+                onDismiss = { hasDismissedTutorial = true }
+            )
         }
     }
 }
