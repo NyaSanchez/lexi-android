@@ -52,7 +52,7 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                 when (page) {
                     0 -> TutorialPage(
                         title = "Elige tu práctica",
-                        description = "1. Selecciona tu modo de juego preferido.\n\n2. Haz clic en 'Empezar' para iniciar tu sesión.",
+                        description = "1. Selecciona tu modo de juego preferido.\n\n2. Haz clic en 'Empezar' para iniciar tu sesión.\n\nNOTA. El avance entre ambos modos es independiente",
                         iconRes = R.drawable.ic_book
                     )
                     1 -> TutorialPage(
