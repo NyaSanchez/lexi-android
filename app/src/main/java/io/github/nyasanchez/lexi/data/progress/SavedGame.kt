@@ -50,4 +50,7 @@ data class SavedGame(
 }
 
 data class ProgressSummary(val total: Long, val wins: Long, val losses: Long, val uniqueWords: Long)
+
+/** Una palabra acertada en un modo: `answerLanguage` es el nombre de VocabularyLanguage. */
+data class WonEntry(val entryId: String, val answerLanguage: String)
 data class ProgressSnapshot(val summary: ProgressSummary, val recent: List<SavedGame>)

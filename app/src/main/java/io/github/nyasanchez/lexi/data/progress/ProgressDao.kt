@@ -44,4 +44,8 @@ interface ProgressDao {
 
     @Query("SELECT DISTINCT localDate FROM completed_games WHERE won = 1 ORDER BY localDate DESC")
     fun observeWinningDates(): Flow<List<String>>
+
+    /** Palabras acertadas al menos una vez, con el idioma en que se respondió (el modo). Solo una consulta: no cambia el esquema. */
+    @Query("SELECT DISTINCT entryId, answerLanguage FROM completed_games WHERE won = 1")
+    fun observeWonEntries(): Flow<List<WonEntry>>
 }

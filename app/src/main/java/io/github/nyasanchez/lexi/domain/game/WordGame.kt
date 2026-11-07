@@ -1,6 +1,7 @@
 package io.github.nyasanchez.lexi.domain.game
 
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyExercise
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
 
 /** Una instancia por palabra y modo. No guarda progreso ni modifica la racha. */
 class WordGame(private val exercise: VocabularyExercise) {
