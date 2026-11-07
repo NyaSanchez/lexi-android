@@ -11,13 +11,17 @@ class LocalVocabularyRepository(catalog: List<VocabularyEntry> = InitialVocabula
         entriesById = catalog.associateBy { it.id }
     }
 
-    fun all(level: VocabularyLevel = VocabularyLevel.INITIAL): List<VocabularyEntry> =
+    /** Palabras de un nivel. Sin indicar nivel devuelve el Básico, el que usa hoy la práctica. */
+    fun all(level: VocabularyLevel = VocabularyLevel.BASIC): List<VocabularyEntry> =
         entriesById.values.filter { it.level == level }
+
+    /** El catálogo completo, de todos los niveles. */
+    fun allLevels(): List<VocabularyEntry> = entriesById.values.toList()
 
     fun findById(id: String): VocabularyEntry? = entriesById[id]
 
     fun exercises(
         answerLanguage: VocabularyLanguage,
-        level: VocabularyLevel = VocabularyLevel.INITIAL,
+        level: VocabularyLevel = VocabularyLevel.BASIC,
     ): List<VocabularyExercise> = all(level).map { it.exerciseFor(answerLanguage) }
 }

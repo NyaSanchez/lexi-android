@@ -4,6 +4,7 @@ import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLanguage
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLanguage.ENGLISH
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLanguage.SPANISH
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
 import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -218,13 +219,15 @@ class WordGameTest {
 
     @Test
     fun everyVocabularyExerciseCanBeWonWithItsOwnAnswer() {
-        VocabularyLanguage.entries.forEach { language ->
-            repository.exercises(language).forEach { exercise ->
-                val result = accepted(WordGame(exercise).submit(exercise.answer))
-                assertEquals(exercise.entryId, GameStatus.WON, result.state.status)
-                assertEquals(exercise.letterCount, result.guess.letters.size)
-                assertTrue(result.guess.letters.all { it.mark == LetterMark.CORRECT })
-                assertEquals(exercise, result.state.solution)
+        VocabularyLevel.entries.forEach { level ->
+            VocabularyLanguage.entries.forEach { language ->
+                repository.exercises(language, level).forEach { exercise ->
+                    val result = accepted(WordGame(exercise).submit(exercise.answer))
+                    assertEquals(exercise.entryId, GameStatus.WON, result.state.status)
+                    assertEquals(exercise.letterCount, result.guess.letters.size)
+                    assertTrue(result.guess.letters.all { it.mark == LetterMark.CORRECT })
+                    assertEquals(exercise, result.state.solution)
+                }
             }
         }
     }

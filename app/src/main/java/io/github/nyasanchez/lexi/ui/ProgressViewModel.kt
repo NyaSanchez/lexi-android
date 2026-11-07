@@ -7,6 +7,10 @@ import io.github.nyasanchez.lexi.data.progress.ProgressDatabase
 import io.github.nyasanchez.lexi.data.progress.ProgressRepository
 import io.github.nyasanchez.lexi.data.progress.ProgressSnapshot
 import io.github.nyasanchez.lexi.data.progress.SavedGame
+import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLanguage
+import io.github.nyasanchez.lexi.domain.level.LevelRules
+import io.github.nyasanchez.lexi.domain.level.LevelStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +41,22 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
     private var observation: Job? = null
 
     init { reload() }
+
+    private val catalog = LocalVocabularyRepository().allLevels()
+
+    /**
+     * Estado de Básico, Intermedio y Avanzado para cada modo (idioma de respuesta), calculado con las
+     * partidas ya guardadas. Cada modo lleva su propio avance y su propio desbloqueo.
+     * Vale null mientras se lee la base de datos, para no mostrar niveles bloqueados por error.
+     */
+    val levels: StateFlow<Map<VocabularyLanguage, List<LevelStatus>>?> = repository.observeWonEntries()
+        .map { won ->
+            VocabularyLanguage.entries.associateWith { language ->
+                val wonIds = won.filter { it.answerLanguage == language.name }.map { it.entryId }.toSet()
+                LevelRules.statuses(catalog, wonIds)
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
 
     data class StreakState(val count: Int, val completedToday: Boolean)

@@ -11,19 +11,22 @@ class LocalVocabularyRepositoryTest {
     private val repository = LocalVocabularyRepository()
 
     @Test
-    fun initialCatalogContainsThirtyDistinctBilingualPairs() {
-        val entries = repository.all()
-
-        assertEquals(30, entries.size)
+    fun everyLevelHasOneHundredWordsAndNothingRepeatsAcrossLevels() {
+        VocabularyLevel.entries.forEach { level ->
+            val levelEntries = repository.all(level)
+            assertEquals(level.name, 100, levelEntries.size)
+            assertTrue(level.name, levelEntries.all { it.level == level })
+        }
+        val entries = repository.allLevels()
+        assertEquals(300, entries.size)
         assertEquals(entries.size, entries.map { it.id }.distinct().size)
         assertEquals(entries.size, entries.map { it.spanish.word }.distinct().size)
         assertEquals(entries.size, entries.map { it.english.word }.distinct().size)
-        assertTrue(entries.all { it.level == VocabularyLevel.INITIAL })
     }
 
     @Test
-    fun eachInitialExampleIncludesItsVocabularyWord() {
-        repository.all().forEach { entry ->
+    fun eachExampleIncludesItsVocabularyWord() {
+        repository.allLevels().forEach { entry ->
             listOf(entry.spanish, entry.english).forEach { text ->
                 val wholeWord = Regex("(?iuU)\\b${Regex.escape(text.word)}\\b")
                 assertTrue("${entry.id}: falta ${text.word} en el ejemplo", wholeWord.containsMatchIn(text.example))
@@ -33,20 +36,22 @@ class LocalVocabularyRepositoryTest {
 
     @Test
     fun bothDirectionsProduceCompleteExercisesForEveryEntry() {
-        val english = repository.exercises(VocabularyLanguage.ENGLISH)
-        val spanish = repository.exercises(VocabularyLanguage.SPANISH)
-        assertEquals(60, english.size + spanish.size)
-        assertEquals(english.map { it.entryId }, spanish.map { it.entryId })
+        VocabularyLevel.entries.forEach { level ->
+            val english = repository.exercises(VocabularyLanguage.ENGLISH, level)
+            val spanish = repository.exercises(VocabularyLanguage.SPANISH, level)
+            assertEquals(200, english.size + spanish.size)
+            assertEquals(english.map { it.entryId }, spanish.map { it.entryId })
 
-        english.zip(spanish).forEach { (forward, reverse) ->
-            assertEquals(forward.answer, reverse.translation)
-            assertEquals(forward.translation, reverse.answer)
-            assertEquals(forward.example, reverse.translatedExample)
-            assertEquals(forward.translatedExample, reverse.example)
-            assertNotEquals(forward.clueLanguage, forward.answerLanguage)
-            assertNotEquals(reverse.clueLanguage, reverse.answerLanguage)
-            assertTrue(forward.definition.isNotBlank() && reverse.definition.isNotBlank())
-            assertTrue(forward.letterCount > 0 && reverse.letterCount > 0)
+            english.zip(spanish).forEach { (forward, reverse) ->
+                assertEquals(forward.answer, reverse.translation)
+                assertEquals(forward.translation, reverse.answer)
+                assertEquals(forward.example, reverse.translatedExample)
+                assertEquals(forward.translatedExample, reverse.example)
+                assertNotEquals(forward.clueLanguage, forward.answerLanguage)
+                assertNotEquals(reverse.clueLanguage, reverse.answerLanguage)
+                assertTrue(forward.definition.isNotBlank() && reverse.definition.isNotBlank())
+                assertTrue(forward.letterCount > 0 && reverse.letterCount > 0)
+            }
         }
     }
 
@@ -73,14 +78,14 @@ class LocalVocabularyRepositoryTest {
 
     @Test
     fun externalListChangesDoNotChangeTheRepository() {
-        val source = repository.all().toMutableList()
+        val source = repository.allLevels().toMutableList()
         val isolated = LocalVocabularyRepository(source)
         source.clear()
-        assertEquals(30, isolated.all().size)
+        assertEquals(300, isolated.allLevels().size)
 
         val returned = isolated.all()
         (returned as MutableList<VocabularyEntry>).clear()
-        assertEquals(30, isolated.all().size)
+        assertEquals(100, isolated.all().size)
         assertEquals("house", isolated.findById("house")?.english?.word)
     }
 }

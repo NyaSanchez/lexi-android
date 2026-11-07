@@ -33,7 +33,9 @@ import androidx.navigation.navArgument
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.nyasanchez.lexi.R
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
 
+private const val PRACTICE_ROUTE = "practice/{mode}/{level}"
 
 private enum class MainDestination(
     val route: String,
@@ -51,11 +53,18 @@ fun LexiApp() {
     val progress by progressModel.progress.collectAsStateWithLifecycle()
     val currentSave by progressModel.save.collectAsStateWithLifecycle()
     val currentStreakState by progressModel.streak.collectAsStateWithLifecycle()
+    val levelStatuses by progressModel.levels.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: MainDestination.HOME.route
     var selectedModeId by rememberSaveable { mutableStateOf(PracticeMode.ENGLISH.id) }
     val selectedMode = PracticeMode.fromId(selectedModeId)
+    var selectedLevelName by rememberSaveable { mutableStateOf(VocabularyLevel.BASIC.name) }
+    val levels = levelStatuses?.get(selectedMode.answerLanguage).orEmpty()
+    // Si el nivel elegido sigue bloqueado, se practica el Básico, que siempre está disponible.
+    val selectedLevel = VocabularyLevel.entries.firstOrNull { it.name == selectedLevelName }
+        ?.takeUnless { chosen -> levels.firstOrNull { it.level == chosen }?.unlocked == false }
+        ?: VocabularyLevel.BASIC
 
     fun goHome() {
         navController.popBackStack(MainDestination.HOME.route, inclusive = false)
@@ -106,11 +115,14 @@ fun LexiApp() {
             composable(MainDestination.HOME.route) {
                 HomeScreen(
                     selectedMode = selectedMode,
+                    selectedLevel = selectedLevel,
+                    levels = levels,
                     streak = currentStreakState.count,
                     completedToday = currentStreakState.completedToday,
                     onModeSelected = { selectedModeId = it.id },
+                    onLevelSelected = { selectedLevelName = it.name },
                     onStart = {
-                        navController.navigate("practice/${selectedMode.id}") {
+                        navController.navigate("practice/${selectedMode.id}/${selectedLevel.name}") {
                             launchSingleTop = true
                         }
                     },
@@ -123,14 +135,29 @@ fun LexiApp() {
                 ProgressScreen(state = progress, streak = currentStreakState.count, onRetry = progressModel::reload, onGoHome = ::goHome)
             }
             composable(
-                route = "practice/{mode}",
-                arguments = listOf(navArgument("mode") { type = NavType.StringType }),
+                route = PRACTICE_ROUTE,
+                arguments = listOf(
+                    navArgument("mode") { type = NavType.StringType },
+                    navArgument("level") { type = NavType.StringType },
+                ),
             ) { entry ->
+                val level = VocabularyLevel.entries
+                    .firstOrNull { it.name == entry.arguments?.getString("level") } ?: VocabularyLevel.BASIC
+                val practiceMode = PracticeMode.fromId(entry.arguments?.getString("mode"))
                 PracticeScreen(
-                    mode = PracticeMode.fromId(entry.arguments?.getString("mode")),
+                    mode = practiceMode,
+                    level = level,
+                    levels = levelStatuses?.get(practiceMode.answerLanguage).orEmpty(),
                     onGoBack = { navController.popBackStack() },
                     saveState = currentSave,
                     onSave = progressModel::save,
+                    onSwitchLevel = { target ->
+                        // Reemplaza la práctica actual para que «←» vuelva a Inicio y no al nivel anterior.
+                        selectedLevelName = target.name
+                        navController.navigate("practice/${practiceMode.id}/${target.name}") {
+                            popUpTo(PRACTICE_ROUTE) { inclusive = true }
+                        }
+                    },
                 )
             }
         }
