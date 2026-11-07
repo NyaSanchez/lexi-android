@@ -53,7 +53,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.nyasanchez.lexi.R
+import io.github.nyasanchez.lexi.data.vocabulary.CefrLevel
 import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
+import io.github.nyasanchez.lexi.domain.level.LevelStatus
 import io.github.nyasanchez.lexi.data.progress.PracticeSessionStore
 import io.github.nyasanchez.lexi.data.progress.SavedGame
 import java.time.ZoneId
@@ -68,8 +71,17 @@ import io.github.nyasanchez.lexi.ui.theme.LexiTheme
 private val AttemptsSaver = listSaver<List<String>, String>(save = { it }, restore = { it.toList() })
 
 @Composable
-fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiState, onSave: (SavedGame) -> Unit) {
-    val entries = remember { LocalVocabularyRepository().all() }
+fun PracticeScreen(
+    mode: PracticeMode,
+    level: VocabularyLevel,
+    levels: List<LevelStatus>,
+    onGoBack: () -> Unit,
+    saveState: SaveUiState,
+    onSave: (SavedGame) -> Unit,
+    onSwitchLevel: (VocabularyLevel) -> Unit,
+) {
+    // Solo las palabras del nivel elegido, en orden: primero el subnivel más sencillo (A1, B1, C1).
+    val entries = remember(level) { LocalVocabularyRepository().all(level) }
     if (entries.isEmpty()) {
         PracticeEmptyScreen(mode, onGoBack)
         return
@@ -77,11 +89,13 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
 
     val context = LocalContext.current
     val store = remember { PracticeSessionStore(context) }
+    // Cada modo y nivel recuerda su propia palabra.
+    val sessionKey = remember(mode, level) { PracticeSessionStore.key(mode.id, level) }
 
-    // Al abrir la práctica se continúa en la palabra donde se quedó la persona en este modo.
-    var entryId by rememberSaveable(mode.id) {
+    // Al abrir la práctica se continúa en la palabra donde se quedó la persona en este modo y nivel.
+    var entryId by rememberSaveable(sessionKey) {
         mutableStateOf(
-            store.load(mode.id)?.entryId?.takeIf { id -> entries.any { it.id == id } }
+            store.load(sessionKey)?.entryId?.takeIf { id -> entries.any { it.id == id } }
                 ?: entries.first().id
         )
     }
@@ -89,7 +103,7 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
     val exercise = remember(entry, mode) { entry.exerciseFor(mode.answerLanguage) }
 
     // Lo guardado solo vale si corresponde a la palabra actual.
-    fun saved() = store.load(mode.id)?.takeIf { it.entryId == entry.id }
+    fun saved() = store.load(sessionKey)?.takeIf { it.entryId == entry.id }
 
     // Guardar solo IDs, texto y hasta seis respuestas; el motor reconstruye las pistas.
     var attempts by rememberSaveable(mode.id, entry.id, stateSaver = AttemptsSaver) {
@@ -112,9 +126,9 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
     var completedZone by rememberSaveable(mode.id, entry.id) { mutableStateOf(saved()?.zoneId ?: "") }
 
     // Cada cambio de palabra o de intentos queda guardado para poder continuar después.
-    LaunchedEffect(mode.id, entry.id, attempts, sessionId, completedAt, completedZone) {
+    LaunchedEffect(sessionKey, entry.id, attempts, sessionId, completedAt, completedZone) {
         store.save(
-            mode.id,
+            sessionKey,
             PracticeSessionStore.Session(entry.id, attempts, sessionId, completedAt, completedZone),
         )
     }
@@ -147,8 +161,14 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
     }
     BackHandler { requestExit() }
 
+    // Estado de este nivel y del siguiente, para ofrecer avanzar cuando se alcanza la meta.
+    val levelStatus = levels.firstOrNull { it.level == level }
+    val nextLevel = levels.firstOrNull { it.level.ordinal == level.ordinal + 1 }?.takeIf { it.unlocked }?.level
+
     PracticeContent(
         mode = mode,
+        level = level,
+        cefr = entry.cefr,
         state = state,
         position = entries.indexOf(entry) + 1,
         total = entries.size,
@@ -183,6 +203,9 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
         onGoBack = ::requestExit,
         saveStatus = saveStatus,
         onRetrySave = { completedGame?.let(onSave) },
+        levelStatus = levelStatus,
+        nextLevel = nextLevel,
+        onSwitchLevel = onSwitchLevel,
     )
     if (showExitDialog) {
         AlertDialog(
@@ -206,6 +229,8 @@ fun PracticeScreen(mode: PracticeMode, onGoBack: () -> Unit, saveState: SaveUiSt
 @Composable
 private fun PracticeContent(
     mode: PracticeMode,
+    level: VocabularyLevel,
+    cefr: CefrLevel,
     state: GameState,
     position: Int,
     total: Int,
@@ -218,11 +243,26 @@ private fun PracticeContent(
     onGoBack: () -> Unit,
     saveStatus: SaveStatus = SaveStatus.IDLE,
     onRetrySave: () -> Unit = {},
+    levelStatus: LevelStatus? = null,
+    nextLevel: VocabularyLevel? = null,
+    onSwitchLevel: (VocabularyLevel) -> Unit = {},
 ) {
     if (state.status != GameStatus.IN_PROGRESS && showResult) {
-        PracticeResultScreen(state, position, total, onNext, onGoBack, saveStatus, onRetrySave)
+        PracticeResultScreen(
+            state = state, 
+            position = position, 
+            total = total, 
+            onNext = onNext, 
+            onGoBack = onGoBack, 
+            saveStatus = saveStatus, 
+            onRetrySave = onRetrySave,
+            levelStatus = levelStatus, 
+            nextLevel = nextLevel, 
+            onSwitchLevel = onSwitchLevel
+        )
         return
     }
+    
     val listState = rememberLazyListState()
     val errorText = guessErrorText(mode, state.wordLength, error)
     // Al enviar una respuesta incorrecta, volver a las pistas; al cambiar de palabra, a la definición.
@@ -255,6 +295,9 @@ private fun PracticeContent(
                     Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.primaryContainer) {
                         Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(stringResource(mode.title), style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer)
+                            Text(stringResource(R.string.practice_level_label, stringResource(level.labelRes), cefr.name),
+                                style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer)
                             Text(state.definition, style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer)
@@ -292,12 +335,12 @@ private fun PracticeContent(
 
 @Composable
 private fun guessErrorText(mode: PracticeMode, length: Int, error: GuessError?): String? = when (error) {
-        GuessError.EMPTY -> stringResource(R.string.guess_empty)
-        GuessError.WRONG_LENGTH -> pluralStringResource(R.plurals.guess_wrong_length, length, length)
-        GuessError.INVALID_CHARACTERS -> stringResource(
-            if (mode == PracticeMode.ENGLISH) R.string.guess_english_letters else R.string.guess_spanish_letters)
-        GuessError.GAME_FINISHED -> stringResource(R.string.guess_finished)
-        null -> null
+    GuessError.EMPTY -> stringResource(R.string.guess_empty)
+    GuessError.WRONG_LENGTH -> pluralStringResource(R.plurals.guess_wrong_length, length, length)
+    GuessError.INVALID_CHARACTERS -> stringResource(
+        if (mode == PracticeMode.ENGLISH) R.string.guess_english_letters else R.string.guess_spanish_letters)
+    GuessError.GAME_FINISHED -> stringResource(R.string.guess_finished)
+    null -> null
 }
 
 @Composable
@@ -322,7 +365,20 @@ private fun GuessSubmit(mode: PracticeMode, length: Int, errorText: String?, onS
 private fun PracticePreview() {
     val exercise = requireNotNull(LocalVocabularyRepository().findById("house")).exerciseFor(PracticeMode.ENGLISH.answerLanguage)
     LexiTheme {
-        PracticeContent(PracticeMode.ENGLISH, WordGame.restore(exercise, listOf("SHARE")).state,
-            1, 100, rememberTextFieldState("HOU"), null, false, {}, {}, {}, {})
+        PracticeContent(
+            mode = PracticeMode.ENGLISH, 
+            level = VocabularyLevel.BASIC, 
+            cefr = CefrLevel.A1,
+            state = WordGame.restore(exercise, listOf("SHARE")).state,
+            position = 1, 
+            total = 100, 
+            input = rememberTextFieldState("HOU"), 
+            error = null, 
+            showResult = false, 
+            onShowResult = {}, 
+            onSubmit = {}, 
+            onNext = {}, 
+            onGoBack = {}
+        )
     }
 }

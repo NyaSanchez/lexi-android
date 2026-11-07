@@ -1,10 +1,23 @@
 package io.github.nyasanchez.lexi.data.progress
 
 import android.content.Context
+import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
 import io.github.nyasanchez.lexi.domain.game.WordGame
 
-/** Recuerda dónde se quedó la persona en cada modo. Los resultados terminados siguen en Room. */
+/**
+ * Recuerda dónde se quedó la persona en cada modo y nivel. Los resultados terminados siguen en Room.
+ * Cada combinación de modo y nivel guarda su propia palabra.
+ */
 class PracticeSessionStore(context: Context) {
+    companion object {
+        /**
+         * Clave de guardado de un modo y un nivel. El nivel Básico conserva la clave que ya se usaba
+         * antes de que existieran los niveles, para no perder el avance de quien ya estaba practicando.
+         */
+        fun key(modeId: String, level: VocabularyLevel): String =
+            if (level == VocabularyLevel.BASIC) modeId else "$modeId.${level.name.lowercase()}"
+    }
+
     private val prefs = context.applicationContext
         .getSharedPreferences("lexi-practice-session", Context.MODE_PRIVATE)
 

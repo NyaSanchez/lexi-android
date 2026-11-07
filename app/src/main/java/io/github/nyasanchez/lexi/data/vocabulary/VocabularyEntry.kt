@@ -5,8 +5,25 @@ enum class VocabularyLanguage {
     ENGLISH,
 }
 
+/** Los tres niveles de la app. Cada uno agrupa dos subniveles CEFR. */
 enum class VocabularyLevel {
-    INITIAL,
+    BASIC,
+    INTERMEDIATE,
+    ADVANCED;
+
+    /** Subniveles CEFR de este nivel, del más sencillo al más difícil. */
+    val sublevels: List<CefrLevel>
+        get() = CefrLevel.entries.filter { it.level == this }
+}
+
+/** Subnivel del Marco Común Europeo. A1-A2 es Básico, B1-B2 Intermedio y C1-C2 Avanzado. */
+enum class CefrLevel(val level: VocabularyLevel) {
+    A1(VocabularyLevel.BASIC),
+    A2(VocabularyLevel.BASIC),
+    B1(VocabularyLevel.INTERMEDIATE),
+    B2(VocabularyLevel.INTERMEDIATE),
+    C1(VocabularyLevel.ADVANCED),
+    C2(VocabularyLevel.ADVANCED),
 }
 
 /** Contenido editorial de una palabra en un idioma; no representa un intento del usuario. */
@@ -27,7 +44,8 @@ data class VocabularyEntry(
     val id: String,
     val spanish: VocabularyText,
     val english: VocabularyText,
-    val level: VocabularyLevel = VocabularyLevel.INITIAL,
+    val level: VocabularyLevel = VocabularyLevel.BASIC,
+    val cefr: CefrLevel = CefrLevel.entries.first { it.level == level },
 ) {
     init {
         require(id.matches(Regex("[a-z][a-z0-9_-]*"))) { "El ID debe ser estable, legible y sin espacios." }
@@ -37,6 +55,7 @@ data class VocabularyEntry(
         require(english.word.matches(Regex("[a-z]+"))) {
             "La palabra inglesa debe ser una sola palabra en minúsculas."
         }
+        require(cefr.level == level) { "El subnivel CEFR debe pertenecer al nivel de la palabra." }
     }
 
     fun exerciseFor(answerLanguage: VocabularyLanguage): VocabularyExercise {
