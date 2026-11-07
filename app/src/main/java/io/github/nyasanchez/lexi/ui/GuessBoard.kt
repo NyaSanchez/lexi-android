@@ -43,11 +43,11 @@ private fun letterStyle(mark: LetterMark?): LetterStyle {
     val dark = isSystemInDarkTheme()
     return when (mark) {
         LetterMark.CORRECT -> if (dark) LetterStyle(Color(0xFF123C2B), Color(0xFFB9F6D0), "✓")
-            else LetterStyle(Color(0xFFDCFCE7), Color(0xFF14532D), "✓")
+        else LetterStyle(Color(0xFFDCFCE7), Color(0xFF14532D), "✓")
         LetterMark.PRESENT -> if (dark) LetterStyle(Color(0xFF4A3509), Color(0xFFFFE29A), "↔")
-            else LetterStyle(Color(0xFFFEF3C7), Color(0xFF78350F), "↔")
+        else LetterStyle(Color(0xFFFEF3C7), Color(0xFF78350F), "↔")
         LetterMark.ABSENT -> if (dark) LetterStyle(Color(0xFF4D2024), Color(0xFFFFCDD2), "×")
-            else LetterStyle(Color(0xFFFEE2E2), Color(0xFF991B1B), "×")
+        else LetterStyle(Color(0xFFFEE2E2), Color(0xFF991B1B), "×")
         null -> LetterStyle(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.onSurface, "")
     }
 }
@@ -145,3 +145,4 @@ internal fun LetterLegend() {
         }
     }
 }
+
