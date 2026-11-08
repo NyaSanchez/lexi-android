@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,11 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import io.github.nyasanchez.lexi.R
 import io.github.nyasanchez.lexi.domain.game.GameState
@@ -40,11 +43,11 @@ private fun letterStyle(mark: LetterMark?): LetterStyle {
     val dark = isSystemInDarkTheme()
     return when (mark) {
         LetterMark.CORRECT -> if (dark) LetterStyle(Color(0xFF123C2B), Color(0xFFB9F6D0), "✓")
-            else LetterStyle(Color(0xFFDCFCE7), Color(0xFF14532D), "✓")
+        else LetterStyle(Color(0xFFDCFCE7), Color(0xFF14532D), "✓")
         LetterMark.PRESENT -> if (dark) LetterStyle(Color(0xFF4A3509), Color(0xFFFFE29A), "↔")
-            else LetterStyle(Color(0xFFFEF3C7), Color(0xFF78350F), "↔")
+        else LetterStyle(Color(0xFFFEF3C7), Color(0xFF78350F), "↔")
         LetterMark.ABSENT -> if (dark) LetterStyle(Color(0xFF4D2024), Color(0xFFFFCDD2), "×")
-            else LetterStyle(Color(0xFFFEE2E2), Color(0xFF991B1B), "×")
+        else LetterStyle(Color(0xFFFEE2E2), Color(0xFF991B1B), "×")
         null -> LetterStyle(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.onSurface, "")
     }
 }
@@ -57,7 +60,12 @@ private fun markLabel(mark: LetterMark) = stringResource(when (mark) {
 })
 
 @Composable
-internal fun GuessBoard(state: GameState) {
+internal fun GuessBoard(
+    state: GameState,
+    input: TextFieldState? = null,
+    errorText: String? = null,
+    onSubmit: () -> Unit = {},
+) {
     val fontScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
     BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         val gap = 4.dp
@@ -76,29 +84,48 @@ internal fun GuessBoard(state: GameState) {
                     }.joinToString("; ")
                     stringResource(R.string.board_evaluated_row, row + 1, guess.word, letters)
                 }
-                Row(
-                    modifier = Modifier.clearAndSetSemantics { contentDescription = description },
+                if (active && input != null) {
+                    GuessRowEditor(input, state.wordLength, row, tileWidth, (52 * fontScale).dp,
+                        gap, description, errorText, onSubmit)
+                } else Row(
+                    modifier = Modifier.testTag("board_row_$row").clearAndSetSemantics { contentDescription = description },
                     horizontalArrangement = Arrangement.spacedBy(gap),
                 ) {
                     repeat(state.wordLength) { index ->
                         val letter = guess?.letters?.get(index)
-                        val style = letterStyle(letter?.mark)
-                        Surface(
-                            modifier = Modifier.width(tileWidth).height((52 * fontScale).dp),
-                            shape = RoundedCornerShape(8.dp),
-                            color = style.background,
-                            contentColor = style.foreground,
-                            border = BorderStroke(if (active) 2.dp else 1.dp,
-                                if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                                Text(letter?.letter?.toString() ?: "", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                                if (letter != null) Text(style.symbol, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
-                            }
-                        }
+                        GuessTile(letter?.letter?.toString().orEmpty(), letter?.mark, active,
+                            tileWidth = tileWidth, tileHeight = (52 * fontScale).dp,
+                            modifier = Modifier.testTag("board_cell_${row}_$index"))
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+internal fun GuessTile(
+    letter: String,
+    mark: LetterMark?,
+    active: Boolean,
+    tileWidth: Dp,
+    tileHeight: Dp,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+) {
+    val style = letterStyle(mark)
+    Surface(
+        modifier = modifier.width(tileWidth).height(tileHeight),
+        shape = RoundedCornerShape(8.dp),
+        color = if (selected) MaterialTheme.colorScheme.primaryContainer else style.background,
+        contentColor = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else style.foreground,
+        border = BorderStroke(if (active) 2.dp else 1.dp,
+            if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Text(letter, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            if (mark != null) Text(style.symbol, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
+            else if (selected) Text("▁", fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -118,3 +145,4 @@ internal fun LetterLegend() {
         }
     }
 }
+

@@ -45,6 +45,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun HomeScreen(
@@ -59,22 +65,40 @@ fun HomeScreen(
 ) {
     // 1. Variable local para saber si el usuario ya cerró el tutorial hoy
     var hasDismissedTutorial by rememberSaveable { mutableStateOf(false) }
+    // Agrega esto al inicio de tu función HomeScreen, junto a tus otras variables de estado
+    var showUpdateNotice by rememberSaveable { mutableStateOf(false) }
 
     // 2. Lógica para mostrarlo: racha en 0 y no haberlo cerrado
     val shouldShowTutorial = streak == 0 && !hasDismissedTutorial
 
     // 3. Box principal para poder encimar el tutorial
     Box(modifier = Modifier.fillMaxSize()) {
-
-        // --- TU INTERFAZ ORIGINAL CON LOS NIVELES NUEVOS ---
         ScreenColumn {
-            LexiBrand()
-            Text(
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LexiBrand()
+
+                // Botón para mostrar el aviso de actualización
+                IconButton(onClick = { showUpdateNotice = true }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_warning_update),
+                        contentDescription = "Aviso de actualización",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+                Text(
                 text = stringResource(R.string.home_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.semantics { heading() },
             )
+            if (showUpdateNotice) {
+                UpdateNoticeDialog(onDismiss = { showUpdateNotice = false })
+            }
             DailyGoalCard(streak = streak, completedToday = completedToday)
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
@@ -307,5 +331,61 @@ private fun HomePreview() {
             onLevelSelected = {},
             onStart = {},
         )
+    }
+}
+
+@Composable
+fun UpdateNoticeDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_warning_update), // Asegúrate de usar el nombre en minúsculas
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(36.dp)
+            )
+        },
+        title = {
+            Text(text = "¡Nueva Actualización!", fontWeight = FontWeight.Bold)
+        },
+        text = {
+            // Usamos una columna con scroll por si el texto es muy largo
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(text = "Si habías completado algún modo antes de la actualización, resuelve una palabra y podrás acceder al siguiente nivel.")
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(text = "Novedades de esta versión:", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+
+                // Lista de cambios
+                BulletPoint("Nuevos Niveles de Vocabulario organizados por dificultad (A1, A2, B1, etc.).")
+                BulletPoint("Tutorial interactivo paso a paso para nuevos usuarios o cuando se regresa al juego.")
+                BulletPoint("Ya no se escribe en un cuadro de texto, si no, directamente en los cuadros.")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "¡Entendido!", fontWeight = FontWeight.Bold)
+            }
+        }
+    )
+}
+
+// Función auxiliar para dibujar los puntitos de la lista de forma limpia
+// Función auxiliar para dibujar los puntitos de la lista de forma limpia
+@Composable
+private fun BulletPoint(text: String) {
+    Row(
+        verticalAlignment = Alignment.Top, // <--- Aquí estaba el detalle
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(text = "•", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Text(text = text, style = MaterialTheme.typography.bodyMedium)
     }
 }

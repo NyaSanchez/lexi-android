@@ -50,7 +50,8 @@
         <item quantity="other">%1$d letras</item>
     </plurals>
     <string name="attempts_used">Intentos: %1$d de %2$d</string>
-    <string name="your_answer">Tu respuesta</string>
+    <string name="board_input_hint">Toca la fila activa y escribe una letra por casilla. Toca una letra para corregirla.</string>
+    <string name="view_result">Ver resultado</string>
     <plurals name="guess_hint_english">
         <item quantity="one">Escribe %1$d letra en inglés.</item>
         <item quantity="other">Escribe %1$d letras en inglés.</item>
