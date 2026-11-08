@@ -8,21 +8,22 @@ Aplicación nativa para Android que permite practicar vocabulario y escritura en
 
 Aplicación Android con Kotlin y Jetpack Compose. Incluye Inicio, selección de los dos modos de práctica y navegación entre Inicio, Repaso y Progreso, con tema claro y oscuro.
 
-La selección del modo se conserva al navegar y al recrearse la actividad. «Empezar» abre la práctica con el idioma seleccionado. Progreso muestra los resultados guardados; Repaso todavía conserva su estado inicial.
+La selección del modo se conserva al navegar y al recrearse la actividad. "Empezar" abre la práctica con el idioma seleccionado, respetando el nivel actual de la persona. Progreso muestra los resultados guardados; Repaso todavía conserva su estado inicial.
 
-El banco local contiene 30 pares de palabras con definiciones y ejemplos en ambos idiomas. La pantalla de práctica ya utiliza ese catálogo y el motor de partida: muestra la definición, un tablero de seis filas y un campo para responder con el teclado del teléfono.
+El banco local contiene el vocabulario clasificado en niveles de dificultad (A1, A2, B1, etc.). La pantalla de práctica ya utiliza ese catálogo y el motor de partida: muestra la definición, un tablero visual interactivo y un campo nativo adaptado para ingresar letras mediante el teclado del dispositivo, bloqueando selectores de texto no deseados.
 
-Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, se abre una vista de resultado con la solución, su traducción y una frase de ejemplo en ambos idiomas. Se pueden revisar los intentos y pasar a la siguiente palabra. El estado de la partida y el borrador se conservan al recrearse la actividad.
+Cada envío válido revela pistas con colores, símbolos y descripciones para lectores de pantalla. Los errores de formato no consumen intentos. Al acertar o agotar las oportunidades, se abre una vista de resultado con la solución, su traducción y una frase de ejemplo en ambos idiomas. Se pueden revisar los intentos y avanzar al siguiente nivel al cumplir los requisitos. El estado de la partida y el borrador se conservan al recrearse la actividad.
 
 Las partidas terminadas se guardan en una base de datos local de Room. Progreso muestra el total de partidas, aciertos, derrotas, palabras distintas acertadas y los últimos 20 resultados. Un identificador único impide duplicar una partida al recuperar la pantalla. La vista de resultado confirma cuándo quedó guardada y permite reintentar si falla.
 
-La selección de palabras sigue el orden del catálogo y vuelve al principio después de las treinta. Salir al inicio termina esa sesión; el cálculo de racha y el repaso se implementarán en los siguientes avances. El historial guardado permanece al cerrar la app; una partida sin terminar sigue siendo transitoria. Las partidas de versiones anteriores, que no se almacenaban, no se inventan ni reconstruyen.
+La selección de palabras sigue el orden del catálogo correspondiente al nivel. Salir al inicio termina esa sesión; el cálculo de racha y el repaso se implementarán en los siguientes avances. El historial guardado permanece al cerrar la app.
 
 El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
 
 ## Cómo funcionará
 
 - Una definición en español pide una palabra en inglés; una definición en inglés pide una palabra en español.
+- Las palabras están divididas en niveles progresivos de dificultad (A1 a C2).
 - Cada palabra permite hasta seis intentos válidos.
 - Las pistas distinguen letras correctas, letras en otra posición y letras sin coincidencia disponible.
 - El primer acierto de cada día completa la meta y actualiza la racha una sola vez.
@@ -52,6 +53,18 @@ Configuración de esta primera versión:
 
 AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle/libs.versions.toml`. Room usa KSP para generar el acceso a SQLite; el esquema inicial se versiona en `app/schemas/`.
 
+## Novedades recientes
+
+*   **Niveles de Vocabulario:** Nuevo sistema de progresión y jerarquía que clasifica las palabras por nivel del Marco Común Europeo (A1 a C2). La interfaz principal refleja el avance de cada bloque y restringe el acceso hasta completarlos.
+*   **Tutorial Interactivo (Onboarding):** Implementación de un carrusel de bienvenida nativo utilizando HorizontalPager de Jetpack Compose Foundation.
+    *   Construido íntegramente con componentes Composable (Surface, Icon, Text), eliminando la dependencia de imágenes estáticas y reduciendo el peso final.
+    *   Diseño adaptable con los tokens de color de MaterialTheme.
+    *   Integrado mediante estado temporal condicionado a los valores persistentes locales (racha de 0 días).
+*   **Tablero Interactivo (GuessBoard):** Nuevo diseño estilo Wordle para el ingreso visual de la palabra.
+    *   Integración transparente de componentes para recibir la entrada del teclado ocultando el cursor y el selector del sistema.
+    *   Manejo de estados con TextFieldState para la distribución fluida de las letras por casilla.
+*   **Gestión de Notificaciones de Actualización:** Incorporación de diálogos nativos (AlertDialog) en pantalla principal controlados por estado para notificar sobre los cambios del sistema de niveles y evitar la sobrecarga visual del tutorial base.
+
 ## Documentación
 
 - [Reglas y alcance](docs/REQUISITOS.md): requisitos extraídos del PDF de referencia y decisiones pendientes.
@@ -66,7 +79,7 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 
 ## Referencia de diseño
 
-La especificación inicial procede de las nueve páginas de «Idea de App.pdf», proporcionado por la persona autora del proyecto. Los diseños muestran el nombre Lexi, una paleta violeta, tarjetas claras y navegación inferior. Los elementos propios del dispositivo de las maquetas se adaptarán a Android.
+La especificación inicial procede de las nueve páginas de "Idea de App.pdf", proporcionado por la persona autora del proyecto. Los diseños muestran el nombre Lexi, una paleta violeta, tarjetas claras y navegación inferior. Los elementos propios del dispositivo de las maquetas se adaptarán a Android.
 
 ## Seguimiento académico
 
@@ -78,7 +91,7 @@ Cada avance funcional o documental se guardará en un commit descriptivo y se en
 2. Usar el JDK integrado de Android Studio como Gradle JDK y tener instalado Android SDK Platform 36.
 3. Esperar a que termine la sincronización de Gradle.
 4. Elegir un emulador o dispositivo Android con API 26 o superior, seleccionar la configuración `app` y pulsar **Run**.
-5. Elegir un modo y pulsar «Empezar». Comprobar la definición, enviar una respuesta y revisar las pistas del tablero.
+5. Elegir un modo y pulsar "Empezar". Comprobar la definición, enviar una respuesta y revisar las pistas del tablero.
 
 Desde PowerShell en la raíz, con `JAVA_HOME` apuntando a un JDK compatible con Gradle 9.5.1 (se recomienda el JDK integrado de Android Studio instalado):
 
@@ -108,12 +121,16 @@ app/
       domain/game/GameState.kt
       domain/game/GuessInput.kt
       domain/game/LetterEvaluator.kt
+      domain/level/LevelRules.kt
+      domain/level/LevelStatus.kt
       ui/LexiApp.kt
       ui/HomeScreen.kt
       ui/PracticeMode.kt
       ui/PracticeScreen.kt
       ui/PracticeResultScreen.kt
       ui/GuessBoard.kt
+      ui/GuessRowEditor.kt
+      ui/TutorialCarousel.kt
       ui/PracticeEmptyScreen.kt
       ui/ReviewScreen.kt
       ui/ProgressScreen.kt
@@ -121,6 +138,8 @@ app/
       ui/ScreenComponents.kt
       ui/theme/Theme.kt
     res/
+      drawable/
+        ic_warning_update.xml
   src/test/java/io/github/nyasanchez/lexi/data/vocabulary/
   src/test/java/io/github/nyasanchez/lexi/data/progress/
   src/test/java/io/github/nyasanchez/lexi/domain/game/
@@ -141,9 +160,3 @@ settings.gradle.kts
 El vocabulario y el motor de partida están separados de la interfaz y no dependen de un teléfono o emulador para ejecutar sus pruebas. Los informes se generan en `app/build/reports/tests/testDebugUnitTest/index.html`.
 
 Las pruebas de pantalla sí necesitan un dispositivo desbloqueado o un emulador. Se ejecutan con `./gradlew.bat :app:connectedDebugAndroidTest`; realizan partidas de prueba y recrean la actividad.
-
-## Novedades de Interfaz
-*   **Tutorial Interactivo Nativo:** Implementación de un carrusel de bienvenida (Onboarding) utilizando `HorizontalPager` de Jetpack Compose Foundation.
-    *   **Renderizado Nativo:** Construido íntegramente con componentes Composable (`Surface`, `Icon`, `Text`), eliminando la dependencia de imágenes estáticas pesadas y reduciendo el tamaño del AAB final.
-    *   **Diseño Adaptable (Dark/Light Mode):** Utiliza los tokens de color de `MaterialTheme` (`surfaceVariant`, `primary`) para adaptarse automáticamente a las preferencias del sistema del usuario.
-    *   **Lógica Condicional por Racha:** Integrado en el `HomeScreen` mediante *State Hoisting*. El tutorial solo se activa si la base de datos (Room) reporta una racha de 0 días, y maneja un estado temporal en memoria (`rememberSaveable`) para no interrumpir la navegación durante la misma sesión tras ser omitido.

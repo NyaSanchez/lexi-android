@@ -45,6 +45,7 @@ private enum class MainDestination(
     HOME("home", R.string.nav_home, R.drawable.ic_home),
     REVIEW("review", R.string.nav_review, R.drawable.ic_book),
     PROGRESS("progress", R.string.nav_progress, R.drawable.ic_progress),
+    CONTRIBUTORS("contributors", R.string.nav_contributors, R.drawable.ic_person)
 }
 
 @Composable
@@ -133,6 +134,9 @@ fun LexiApp() {
             }
             composable(MainDestination.PROGRESS.route) {
                 ProgressScreen(state = progress, streak = currentStreakState.count, onRetry = progressModel::reload, onGoHome = ::goHome)
+            }
+            composable(MainDestination.CONTRIBUTORS.route) {
+                ContributorsScreen()
             }
             composable(
                 route = PRACTICE_ROUTE,
