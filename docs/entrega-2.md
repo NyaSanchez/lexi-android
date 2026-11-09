@@ -59,7 +59,7 @@ El estado de la siguiente tabla corresponde al issue y al PR del repositorio.
 | --- | --- | --- | --- |
 | Ampliar el vocabulario a 100 palabras y recuperar la sesión de práctica | Angel Tellez, autor del PR | [Issue #1](https://github.com/NyaSanchez/lexi-android/issues/1) y [PR #2](https://github.com/NyaSanchez/lexi-android/pull/2) | Issue cerrado y PR integrado el 01/11/2026 |
 | Incorporar niveles, subniveles y desbloqueo por progreso | Angel Tellez, responsable del issue y autor del PR | [Issue #4](https://github.com/NyaSanchez/lexi-android/issues/4) y [PR #13](https://github.com/NyaSanchez/lexi-android/pull/13) | Issue cerrado y PR integrado el 07/11/2026 |
-| Auditar vocabulario y accesibilidad | Zyanya Sanchez, responsable asignado | [Issue #5](https://github.com/NyaSanchez/lexi-android/issues/5) | Aierto |
+| Auditar vocabulario y accesibilidad | Zyanya Sanchez, responsable asignado | [Issue #5](https://github.com/NyaSanchez/lexi-android/issues/5) | Abierto |
 | Gestionar el lanzamiento inicial en prueba cerrada | Angel Orozco, responsable asignado | [Issue #6](https://github.com/NyaSanchez/lexi-android/issues/6) | Abierto |
 | Gestionar la actualización y documentar la entrega | Angel Orozco, responsable asignado | [Issue #7](https://github.com/NyaSanchez/lexi-android/issues/7) | Cerrado el 07/11/2026; evidencia del lanzamiento en la sección 3 |
 | Preparar el manual de incorporación e instalación para testers | Angel Tellez, responsable del issue y autor del PR | [Issue #8](https://github.com/NyaSanchez/lexi-android/issues/8) y [PR #9](https://github.com/NyaSanchez/lexi-android/pull/9) | Issue cerrado y PR integrado el 03/11/2026 |
@@ -166,8 +166,8 @@ La entrada directa en el tablero y la corrección del selector están documentad
 
 | Elemento del cambio presentado | Registro |
 | --- | --- |
-| Comportamiento anterior | En el defecto #11, los tiradores del selector cubrían la primera casilla al editar otra letra. [COMPLETAR: confirmar si este caso corresponde a la comparación v1/v2 presentada; de lo contrario, describir el comportamiento anterior del cambio elegido] |
-| Comportamiento corregido | El QA de #10 registra que la casilla elegida permite sustituir su letra con el tablero legible, tras la corrección `bbc5672`. [COMPLETAR: resultado observado en la versión distribuida por Play] |
+| Comportamiento anterior | En v1, los tiradores del selector cubrían la primera casilla al editar otra letra, como se documenta en el issue #11. |
+| Comportamiento corregido | La corrección `bbc5672` permite sustituir letras con el tablero legible. En los [videos de QA-05](pruebas.md#qa-05-correccion-del-selector) se editan BOOK y CASA, en ambos modos, sin tiradores sobre la primera casilla; la edición conserva el contador hasta pulsar Comprobar. |
 | Criterio de aceptación | Para la corrección del selector: editar una letra intermedia y una final en ambos idiomas; comprobar el indicador, la casilla modificada y el contador de intentos hasta pulsar Comprobar.|
 
 ### 3.2. Identificación de la segunda publicación
@@ -181,7 +181,7 @@ La entrada directa en el tablero y la corrección del selector están documentad
 | Fecha de publicación | 7 de noviembre de 2026 7:29pm |
 | Responsable de publicación |  Orozco Aguilar Angel Isai |
 
-En el commit de referencia `9a73231`, la configuración declara `versionName = 0.2.0` y `versionCode = 1`. **[COMPLETAR: establecer la correspondencia entre el código fuente y los valores de los AAB publicados; describir cualquier ajuste de versión aplicado al compilar y enlazar su registro].**
+Zyanya Sanchez identifica el [commit 9a73231c19a2fa2b6a4a3627a741a85ea3718ad1](https://github.com/NyaSanchez/lexi-android/commit/9a73231c19a2fa2b6a4a3627a741a85ea3718ad1) como base del AAB actualizado. La configuración de ese commit declara `versionName = 0.2.0` y `versionCode = 1`, mientras que el paquete publicado en Console muestra `versionCode = 2`. **[COMPLETAR: describir y enlazar el registro del ajuste de versión aplicado al generar el AAB publicado, con confirmación del responsable de publicación].**
 
 #### Evidencia E-06. Historial de los dos lanzamientos
 
@@ -211,7 +211,7 @@ En el commit de referencia `9a73231`, la configuración declara `versionName = 0
 
 ### 4.1. Matriz de QA
 
-La [matriz de pruebas de la Entrega 2](pruebas.md) define los seis casos obligatorios y tres comprobaciones complementarias. Cada caso identifica dispositivo/API, versión, pasos, resultado esperado y campos para registrar la ejecución y su evidencia.
+La [matriz de pruebas de la Entrega 2](pruebas.md) contiene ocho casos de instalación, partida, validación, actualización, selector, tutorial, niveles y reapertura. La conservación al reabrir V2 no demuestra por sí sola la conservación de datos durante la actualización V1 → V2. Cada caso identifica dispositivo/API, versión, pasos, resultado esperado y campos para registrar la ejecución y su evidencia.
 
 T03 confirmó que el Xiaomi utiliza 0.2.0 desde Google Play.
 
@@ -222,9 +222,9 @@ T03 confirmó que el Xiaomi utiliza 0.2.0 desde Google Play.
 | QA-03. Error o entrada inválida | [Validación de longitud](pruebas.md#qa-03-entrada-invalida) |
 | QA-04. Actualización conservando la instalación | [Actualización desde Google Play](pruebas.md#qa-04-actualizacion-desde-google-play) |
 | QA-05. Mejora o corrección de V2 | [Corrección del selector](pruebas.md#qa-05-correccion-del-selector) |
-| QA-07. Tutorial interactivo | [Aparición, navegación y cierre](pruebas.md#qa-07-tutorial-interactivo)|
-| QA-08. Niveles y vocabulario | [Selección, progreso y desbloqueo](pruebas.md#qa-08-niveles-y-vocabulario) |
-| QA-09. Persistencia al reabrir V2 | [Conservación de resultados al reabrir](pruebas.md#qa-09-persistencia-al-reabrir) |
+| QA-06. Tutorial interactivo | [Aparición, navegación y cierre](pruebas.md#qa-06-tutorial-interactivo)|
+| QA-07. Niveles y vocabulario | [Selección, progreso y desbloqueo](pruebas.md#qa-07-niveles-y-vocabulario) |
+| QA-08. Persistencia al reabrir V2 | [Conservación de resultados al reabrir](pruebas.md#qa-08-persistencia-al-reabrir) |
 
 
 

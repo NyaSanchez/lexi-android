@@ -6,7 +6,7 @@ Esta matriz reúne las pruebas de instalación inicial, tarea principal, entrada
 
 **Responsable del registro:** Sanchez Valadez Zyanya Maxi. **Alias de tester:** T03.
 
-La persona probadora confirmó que el Xiaomi tiene instalada la versión 0.2.0 desde Google Play. Las capturas de Play Console acreditan las publicaciones 0.1.0 (código 1) y 0.2.0 (código 2). Los resultados funcionales de esta matriz están pendientes de ejecución documentada. 
+La persona probadora confirmó que el Xiaomi tiene instalada la versión 0.2.0 desde Google Play. Las capturas de Play Console acreditan las publicaciones 0.1.0 (código 1) y 0.2.0 (código 2). Los resultados manuales registrados por T03 se acompañan de videos y capturas. La revisión de los niveles Intermedio y Avanzado permanece pendiente. 
 
 ### Entorno y versiones
 
@@ -30,14 +30,14 @@ La persona probadora confirmó que el Xiaomi tiene instalada la versión 0.2.0 d
 
 | Caso | Comprobación | Dispositivo / API | Versión | Estado |
 | --- | --- | --- | --- | --- |
-| [QA-01](#qa-01-instalacion-inicial) | Instalación inicial desde Google Play | D01 / 34; confirmar dispositivo del registro recuperado | 0.1.0 (1) | Aprobadoa |
+| [QA-01](#qa-01-instalacion-inicial) | Instalación inicial desde Google Play | D01 / 34; confirmar dispositivo del registro recuperado | 0.1.0 (1) | Aprobado |
 | [QA-02](#qa-02-partida-completa) | Tarea principal: partida y resultado guardado | D01 / 34 | 0.2.0 (2) | Aprobado |
 | [QA-03](#qa-03-entrada-invalida) | Respuesta incompleta sin consumir intentos | D01 / 34 | 0.2.0 (2) | Aprobado |
 | [QA-04](#qa-04-actualizacion-desde-google-play) | Actualización sin desinstalar | D01 / 34; confirmar dispositivo de la evidencia | 0.1.0 (1) → 0.2.0 (2) |Aprobado|
 | [QA-05](#qa-05-correccion-del-selector) | Edición de letras sin tiradores superpuestos | D01 / 34 | 0.2.0 (2) | Aprobado |
-| [QA-06](#qa-07-tutorial-interactivo) | Tutorial, navegación y cierre | D01 / 34 | 0.2.0 (2) | Aprobadoa |
-| [QA-07](#qa-08-niveles-y-vocabulario) | Niveles, vocabulario y desbloqueo | D01 / 34 | 0.2.0 (2) | Pendiente |
-| [QA-08](#qa-09-persistencia-al-reabrir) | Conservación de resultados al reabrir V2 | D01 / 34 | 0.2.0 (2) | Aprobado |
+| [QA-06](#qa-06-tutorial-interactivo) | Tutorial, navegación y cierre | D01 / 34 | 0.2.0 (2) | Aprobado |
+| [QA-07](#qa-07-niveles-y-vocabulario) | Niveles, vocabulario y desbloqueo | D01 / 34 | 0.2.0 (2) | Pendiente |
+| [QA-08](#qa-08-persistencia-al-reabrir) | Conservación de resultados al reabrir V2 | D01 / 34 | 0.2.0 (2) | Aprobado |
 
 ## QA-01. Instalacion inicial
 
@@ -90,7 +90,7 @@ La persona probadora confirmó que el Xiaomi tiene instalada la versión 0.2.0 d
 | Precondición | V1 instalada desde Google Play, con la misma cuenta autorizada y datos locales conservados. |
 | Pasos | 1. Mostrar V1 instalada y el estado de Progreso. 2. Abrir la ficha de Lexi en Google Play. 3. Pulsar Actualizar y esperar a que termine. 4. Abrir Lexi, mostrar V2 instalada y ejecutar la tarea principal. Mantener la instalación y sus datos durante todo el proceso. |
 | Resultado esperado | Google Play actualiza el mismo paquete de código 1 a código 2 sin desinstalar; V2 abre y permite jugar. |
-| Resultado observado | T03 confirma que actualmente usa V2 desde Google Play. No hay registro visual del proceso V1 → V2 ni confirmación documentada de cada paso. |
+| Resultado observado | T03 confirma que actualmente usa V2 desde Google Play. Las capturas muestran la ficha con Actualizar y posteriormente Jugar; en ellas no aparecen los números de versión ni una comparación de los datos antes y después de actualizar. |
 | Evidencia | [Captura 1: opción Actualizar en Google Play](evidencia/entrega-2/Evidencias%20QA/qa-04-actualizacion-play1.jpeg) y [captura 2: opción Jugar](evidencia/entrega-2/Evidencias%20QA/qa-04-actualizacion-play2.jpeg). [Historial de publicaciones](evidencia/entrega-2/play-historial-v1-v2.jpeg). |
 | Estado / incidencia | Aprobado |
 
