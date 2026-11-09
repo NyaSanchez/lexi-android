@@ -32,7 +32,7 @@ La documentación relaciona los requisitos de la Entrega 2 con los PRs, issues, 
 | Aplicación en Google Play | [Ficha de Lexi](https://play.google.com/store/apps/details?id=io.github.nyasanchez.lexi) |
 | Manual para testers | [Manual de instalación](Manual.pdf) |
 | Inventario de evidencias | [Archivos y fuentes](evidencia/entrega-2/README.md) |
-| Matriz de QA | [COMPLETAR: incorporar `docs/pruebas.md` y enlazar aquí la matriz con los seis casos ejecutados] ||
+| Matriz de QA | [Casos, resultados y evidencias de pruebas](pruebas.md) |
 
 ## 1. Gestión Scrum y trabajo colaborativo
 
@@ -136,9 +136,9 @@ El [PR #14](https://github.com/NyaSanchez/lexi-android/pull/14) contiene captura
 | Nombre de la aplicación | Lexi: Práctica Dual |
 | Identificador del paquete | `io.github.nyasanchez.lexi` |
 | Canal cerrado | Prueba cerrada - Entrega 2 - Curso |
-| Nombre del lanzamiento | Lexi. Practica Dual |
-| versionName | app-release.aab |
-| versionCode | 0.1.0 |
+| Nombre del lanzamiento | 1 (0.1.0) |
+| versionName | 0.1.0 |
+| versionCode | 1 |
 | Fecha de publicación | 2 de noviembre de 2026 6:43pm |
 | Estado de publicación | Se remplazo el 7 de noviembre del 2026 7.29pm |
 | Responsable de publicación | Orozco Aguilar Angel Isai |
@@ -175,9 +175,9 @@ La entrada directa en el tablero y la corrección del selector están documentad
 | Dato | Registro de v2 |
 | --- | --- |
 | Identificador del paquete | `io.github.nyasanchez.lexi` |
-| Nombre del lanzamiento | Lexi. Practica Dual  |
-| versionName | app-release.aab  |
-| versionCode | 2(0.2.0) |
+| Nombre del lanzamiento | 2 (0.2.0) |
+| versionName | 0.2.0 |
+| versionCode | 2 |
 | Fecha de publicación | 7 de noviembre de 2026 7:29pm |
 | Responsable de publicación |  Orozco Aguilar Angel Isai |
 
@@ -193,7 +193,9 @@ En el commit de referencia `9a73231`, la configuración declara `versionName = 0
 
 
 #### Evidencia E-08. Notas de versión publicadas
-![E-08. Notas publicadas de la actualización](evidencia/entrega-2/play-notas-v2.jpeg)
+> **[INSERTAR EVIDENCIA E-08]** Incorporar una captura del texto de las notas de versión publicadas para 2 (0.2.0). La imagen actual muestra el paquete publicado y no contiene las notas de versión.
+
+![Detalle del paquete publicado de v2; notas de versión pendientes](evidencia/entrega-2/play-notas-v2.jpeg)
 
 ### 3.3. Actualización en el dispositivo y conservación de datos
 
@@ -209,26 +211,21 @@ En el commit de referencia `9a73231`, la configuración declara `versionName = 0
 
 ### 4.1. Matriz de QA
 
-**[COMPLETAR: incorporar y enlazar `docs/pruebas.md` con al menos seis casos reales. Cada registro debe incluir fecha, dispositivo/API, versión, pasos, resultado esperado, resultado observado y evidencia accesible].**
+La [matriz de pruebas de la Entrega 2](pruebas.md) define los seis casos obligatorios y tres comprobaciones complementarias. Cada caso identifica dispositivo/API, versión, pasos, resultado esperado y campos para registrar la ejecución y su evidencia.
 
-| Caso obligatorio | Registro y evidencia |
+T03 confirmó que el Xiaomi utiliza 0.2.0 desde Google Play.
+
+| Caso | Registro y evidencia |
 | --- | --- |
-| QA-01. Instalación inicial por Google Play | [COMPLETAR: enlace al caso y a E-07] |
-| QA-02. Tarea principal: partida completa | [COMPLETAR: enlace al caso, resultado y ejemplos de la partida] |
-| QA-03. Error o entrada inválida | [COMPLETAR: enlace al caso y captura con mensaje de error y contador de intentos] |
-| QA-04. Actualización conservando la instalación | [COMPLETAR: enlace al caso y a E-11] |
-| QA-05. Mejora o corrección de v2 | [COMPLETAR: enlace al caso y al comportamiento actualizado en el dispositivo] |
-| QA-06. Conservación de datos o estado | [COMPLETAR: enlace al caso y comparación antes/después] |
+| QA-01. Instalación inicial por Google Play | [Instalación de V1](pruebas.md#qa-01-instalacion-inicial)|
+| QA-02. Tarea principal: partida completa | [Partida, resultado y guardado](pruebas.md#qa-02-partida-completa) |
+| QA-03. Error o entrada inválida | [Validación de longitud](pruebas.md#qa-03-entrada-invalida) |
+| QA-04. Actualización conservando la instalación | [Actualización desde Google Play](pruebas.md#qa-04-actualizacion-desde-google-play) |
+| QA-05. Mejora o corrección de V2 | [Corrección del selector](pruebas.md#qa-05-correccion-del-selector) |
+| QA-07. Tutorial interactivo | [Aparición, navegación y cierre](pruebas.md#qa-07-tutorial-interactivo)|
+| QA-08. Niveles y vocabulario | [Selección, progreso y desbloqueo](pruebas.md#qa-08-niveles-y-vocabulario) |
+| QA-09. Persistencia al reabrir V2 | [Conservación de resultados al reabrir](pruebas.md#qa-09-persistencia-al-reabrir) |
 
-#### Evidencia E-12. Resultados de QA
-
-> **[INSERTAR EVIDENCIA E-12]** Capturas o videos de la partida, la entrada inválida y la mejora comprobada, enlazados con los casos de `docs/pruebas.md`. Pueden reutilizarse E-07 y E-11 si muestran los pasos y resultados del caso. Nombres sugeridos: `qa-partida.png`, `qa-entrada-invalida.png` y `qa-mejora-v2.png`.
-
-<!--
-![E-12a. Partida y resultado](evidencia/entrega-2/qa-partida.png)
-![E-12b. Validación de entrada inválida](evidencia/entrega-2/qa-entrada-invalida.png)
-![E-12c. Mejora de v2 comprobada](evidencia/entrega-2/qa-mejora-v2.png)
--->
 
 
 
