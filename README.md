@@ -4,6 +4,10 @@ Aplicación nativa para Android que permite practicar vocabulario y escritura en
 
 **¿Te incorporas al equipo?** Empieza por la [guía de incorporación y contexto](docs/GUIA_EQUIPO.md): acceso, instalación, estado actual, arquitectura, pendientes, pruebas y trabajo con ramas y commits.
 
+## Documentación Segunda Entrega:
+
+[Link directo a la documentación](docs/evidencia/entrega-2/README.md)
+
 ## Estado actual
 
 Aplicación Android con Kotlin y Jetpack Compose. Incluye Inicio, selección de los dos modos de práctica y navegación entre Inicio, Repaso y Progreso, con tema claro y oscuro.
