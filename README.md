@@ -16,9 +16,9 @@ Cada envío válido revela pistas con colores, símbolos y descripciones para le
 
 Las partidas terminadas se guardan en una base de datos local de Room. Progreso muestra el total de partidas, aciertos, derrotas, palabras distintas acertadas y los últimos 20 resultados. Un identificador único impide duplicar una partida al recuperar la pantalla. La vista de resultado confirma cuándo quedó guardada y permite reintentar si falla.
 
-La selección de palabras sigue el orden del catálogo correspondiente al nivel. Salir al inicio termina esa sesión; el cálculo de racha y el repaso se implementarán en los siguientes avances. El historial guardado permanece al cerrar la app.
+La selección de palabras sigue el orden del catálogo correspondiente al nivel. La práctica conserva la continuación por modo y nivel. La racha se calcula a partir de las partidas ganadas; Repaso mantiene su estado inicial. El historial guardado permanece al cerrar la app.
 
-El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su publicación en Google Play.
+La aplicación cuenta con una publicación inicial y una actualización en prueba cerrada de Google Play. El expediente de la Entrega 2 documenta sus versiones y la evidencia disponible.
 
 ## Cómo funcionará
 
@@ -29,6 +29,30 @@ El objetivo es desarrollar y probar la aplicación por etapas hasta preparar su 
 - El primer acierto de cada día completa la meta y actualiza la racha una sola vez.
 - Al acertar, se muestran la traducción y una frase de ejemplo.
 - Las secciones principales serán Inicio, Repaso y Progreso.
+
+## Prueba cerrada en Google Play
+
+Lexi se distribuye en el canal **Prueba cerrada - Entrega 2 - Curso**, con el paquete `io.github.nyasanchez.lexi`. El acceso requiere una cuenta autorizada por el equipo.
+
+### Instrucciones para testers
+
+1. Iniciar sesión en Google Play con la cuenta autorizada y abrir el [enlace de incorporación a la prueba](https://play.google.com/apps/testing/io.github.nyasanchez.lexi).
+2. Aceptar la participación y abrir la [ficha de Lexi en Google Play](https://play.google.com/store/apps/details?id=io.github.nyasanchez.lexi).
+3. Pulsar **Instalar** si la app aún no está instalada. Si ya existe una versión anterior y aparece **Actualizar**, utilizar esa opción conservando la instalación y sus datos.
+4. Abrir Lexi, recorrer el tutorial si aparece y elegir un modo y nivel disponibles. Escribir la respuesta en las casillas y pulsar **Comprobar** para recibir las pistas.
+5. Al completar la partida, abrir **Ver resultado** y comprobar el resultado guardado en **Progreso**.
+6. Ejecutar los casos de la [matriz de QA](docs/pruebas.md) y registrar fecha, dispositivo/API, versión, pasos, resultado observado y evidencia. Los defectos se documentan en [Issues](https://github.com/NyaSanchez/lexi-android/issues), con título y descripción en inglés.
+
+La ejecución desde Android Studio corresponde al flujo de desarrollo. Las evidencias de distribución y actualización de la Entrega 2 se obtienen desde la instalación de Google Play.
+
+### Versiones publicadas
+
+| Lanzamiento | versionName | versionCode | Fecha de publicación | Alcance |
+| --- | --- | --- | --- | --- |
+| Inicial | 0.1.0 | 1 | 02/11/2026 | Primera publicación en prueba cerrada. |
+| Actualización | 0.2.0 | 2 | 07/11/2026 | Corrección de los tiradores del selector, tutorial y niveles Básico, Intermedio y Avanzado, con 100 palabras por nivel. |
+
+El [expediente de la Entrega 2](docs/entrega-2.md) enlaza los lanzamientos, PRs, issues, revisiones y evidencias. La [matriz de QA](docs/pruebas.md) registra la ejecución manual y las comprobaciones pendientes. Los valores de la tabla proceden de las capturas de Play Console. Zyanya Sanchez identifica [9a73231](https://github.com/NyaSanchez/lexi-android/commit/9a73231c19a2fa2b6a4a3627a741a85ea3718ad1) como base del AAB actualizado; queda por documentar el ajuste del código de versión 1 del repositorio al código 2 publicado.
 
 ## Tecnología elegida
 
@@ -55,7 +79,7 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 
 ## Novedades recientes
 
-*   **Niveles de Vocabulario:** Nuevo sistema de progresión y jerarquía que clasifica las palabras por nivel del Marco Común Europeo (A1 a C2). La interfaz principal refleja el avance de cada bloque y restringe el acceso hasta completarlos.
+*   **Niveles de Vocabulario:** Nuevo sistema de progresión y jerarquía que clasifica las palabras por nivel del Marco Común Europeo (A1 a C2). La interfaz muestra tres niveles de 100 palabras y habilita el siguiente al acertar el 70 % del anterior, con progreso independiente por modo.
 *   **Tutorial Interactivo (Onboarding):** Implementación de un carrusel de bienvenida nativo utilizando HorizontalPager de Jetpack Compose Foundation.
     *   Construido íntegramente con componentes Composable (Surface, Icon, Text), eliminando la dependencia de imágenes estáticas y reduciendo el peso final.
     *   Diseño adaptable con los tokens de color de MaterialTheme.
@@ -67,6 +91,9 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 
 ## Documentación
 
+- [Entrega 2](docs/entrega-2.md): publicaciones, sprint y trazabilidad de los cambios.
+- [Matriz de QA](docs/pruebas.md): casos manuales, resultados y videos del dispositivo.
+- [Inventario de evidencias](docs/evidencia/entrega-2/README.md): archivos disponibles y su alcance.
 - [Reglas y alcance](docs/REQUISITOS.md): requisitos extraídos del PDF de referencia y decisiones pendientes.
 - [Plan y rutina de commits](docs/COMMITS.md): avances previstos, validación y mensajes de ejemplo.
 - [Primer arranque](docs/PRIMER_ARRANQUE.md): apertura en Android Studio, ejecución y commit del proyecto inicial.
@@ -82,6 +109,8 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 La especificación inicial procede de las nueve páginas de "Idea de App.pdf", proporcionado por la persona autora del proyecto. Los diseños muestran el nombre Lexi, una paleta violeta, tarjetas claras y navegación inferior. Los elementos propios del dispositivo de las maquetas se adaptarán a Android.
 
 ## Seguimiento académico
+
+Se utilizó Codex como apoyo en la implementación incremental, la preparación de pruebas y la redacción y revisión de documentación. Las publicaciones y operaciones de GitHub se realizaron por integrantes del equipo; las pruebas manuales del dispositivo fueron ejecutadas por la persona probadora.
 
 Cada avance funcional o documental se guardará en un commit descriptivo y se enviará a GitHub. El historial debe reflejar el trabajo real y permitir revisar qué cambió y cómo se comprobó.
 
