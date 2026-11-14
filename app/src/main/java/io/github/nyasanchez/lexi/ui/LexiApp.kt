@@ -48,7 +48,7 @@ private enum class MainDestination(
     @param:DrawableRes val icon: Int,
 ) {
     HOME("home", R.string.nav_home, R.drawable.ic_home),
-    REVIEW("review", R.string.nav_review, R.drawable.ic_book),
+    REVIEW("review", R.string.nav_review, R.drawable.ic_review),
     PROGRESS("progress", R.string.nav_progress, R.drawable.ic_progress),
     CONTRIBUTORS("contributors", R.string.nav_contributors, R.drawable.ic_person)
 }

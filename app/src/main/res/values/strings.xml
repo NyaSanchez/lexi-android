@@ -131,7 +131,7 @@
     <string name="history_lost">Sin acierto</string>
     <string name="daily_streak">¡Llevas una racha de %1$d días!</string>
     <string name="daily_streak_title">Racha actual</string>
-    <string name="nav_contributors">Colaboradores</string>
+    <string name="nav_contributors">Equipo</string>
     <plurals name="history_attempts">
         <item quantity="one">%1$d intento utilizado</item>
         <item quantity="other">%1$d intentos utilizados</item>
