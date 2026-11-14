@@ -2,6 +2,7 @@ package io.github.nyasanchez.lexi.ui
 
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,7 +69,7 @@ import io.github.nyasanchez.lexi.domain.game.SubmissionResult
 import io.github.nyasanchez.lexi.domain.game.WordGame
 import io.github.nyasanchez.lexi.ui.theme.LexiTheme
 
-private val AttemptsSaver = listSaver<List<String>, String>(save = { it }, restore = { it.toList() })
+internal val AttemptsSaver = listSaver<List<String>, String>(save = { it }, restore = { it.toList() })
 
 @Composable
 fun PracticeScreen(
@@ -227,13 +228,13 @@ fun PracticeScreen(
 }
 
 @Composable
-private fun PracticeContent(
+internal fun PracticeContent(
     mode: PracticeMode,
     level: VocabularyLevel,
     cefr: CefrLevel,
     state: GameState,
-    position: Int,
-    total: Int,
+    position: Int?,
+    total: Int?,
     input: TextFieldState,
     error: GuessError?,
     showResult: Boolean,
@@ -246,6 +247,7 @@ private fun PracticeContent(
     levelStatus: LevelStatus? = null,
     nextLevel: VocabularyLevel? = null,
     onSwitchLevel: (VocabularyLevel) -> Unit = {},
+    @StringRes backLabel: Int = R.string.back_home,
 ) {
     if (state.status != GameStatus.IN_PROGRESS && showResult) {
         PracticeResultScreen(
@@ -257,8 +259,9 @@ private fun PracticeContent(
             saveStatus = saveStatus, 
             onRetrySave = onRetrySave,
             levelStatus = levelStatus, 
-            nextLevel = nextLevel, 
-            onSwitchLevel = onSwitchLevel
+            nextLevel = nextLevel,
+            onSwitchLevel = onSwitchLevel,
+            backLabel = backLabel,
         )
         return
     }
@@ -282,10 +285,12 @@ private fun PracticeContent(
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onGoBack) {
-                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.back_home))
+                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(backLabel))
                     }
                     Box(Modifier.weight(1f)) { LexiBrand() }
-                    Text(stringResource(R.string.word_position, position, total), style = MaterialTheme.typography.labelLarge)
+                    if (position != null && total != null) {
+                        Text(stringResource(R.string.word_position, position, total), style = MaterialTheme.typography.labelLarge)
+                    }
                 }
             }
             item {

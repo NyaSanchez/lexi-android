@@ -37,12 +37,21 @@
     <string name="level_keep_going">Seguir en %1$s</string>
     <string name="start_practice">Empezar</string>
     <string name="back_home">Volver al inicio</string>
-    <string name="choose_practice">Elegir práctica</string>
+    <string name="choose_practice">Volver a Inicio</string>
     <string name="no_words_title">No hay palabras disponibles</string>
     <string name="no_words_description">Todavía no hay palabras para practicar en este nivel.</string>
     <string name="review_title">Tu repaso</string>
-    <string name="review_empty_title">Tu colección empieza aquí</string>
-    <string name="review_empty_description">Las palabras que practiques aparecerán aquí para que puedas repasarlas.</string>
+    <string name="review_empty_title">¡Ya acabaste tus palabras por repasar!</string>
+    <string name="review_empty_description">Presiona el botón para regresar al inicio.</string>
+    <string name="review_go_home">Regresar al inicio</string>
+    <string name="review_loading">Cargando tu repaso…</string>
+    <plurals name="review_pending">
+        <item quantity="one">Tienes %1$d palabra por repasar. Si la aciertas, se cuenta en el avance de tu nivel.</item>
+        <item quantity="other">Tienes %1$d palabras por repasar. Si las aciertas, se cuentan en el avance de tu nivel.</item>
+    </plurals>
+    <string name="review_retry">Reintentar</string>
+    <string name="review_retry_description">Reintentar: %1$s</string>
+    <string name="review_back">Volver a Repaso</string>
     <string name="progress_title">Tu progreso</string>
     <string name="word_position">Palabra %1$d de %2$d</string>
     <plurals name="word_length">
