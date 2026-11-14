@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +23,7 @@ import io.github.nyasanchez.lexi.R
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialCarousel(onDismiss: () -> Unit) {
-    val pagerState = rememberPagerState(pageCount = { 5 })
+    val pagerState = rememberPagerState(pageCount = { 6 })
 
     Box(
         modifier = Modifier
@@ -58,19 +60,24 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                     1 -> TutorialPage(
                         title = "Niveles de Dificultad",
                         description = "1. Mientras más juegues, estarás desbloqueando niveles de dificultad.\n\n2. Los niveles se separan en: A1, A2, B1, B2, C1 y C2. ¡Completa todos!",
-                        iconRes = R.drawable.ic_book
+                        iconRes = R.drawable.ic_difficult
                     )
                     2 -> TutorialPage(
+                        title = "Zona De Repaso",
+                        description = "¿Te equivocaste en una palabra?\nNo te preocupes, accede a la zona de repaso donde aparecerán las palabras para seguir intentando.",
+                        iconRes = R.drawable.ic_review
+                    )
+                    3 -> TutorialPage(
                         title = "Adivina la palabra",
                         description = "Escribe la palabra correcta. Los colores te indicarán si las letras están en la posición adecuada.",
                         iconRes = R.drawable.ic_progress
                     )
-                    3 -> TutorialPage(
+                    4 -> TutorialPage(
                         title = "Mantén tu racha",
                         description = "Completa tu práctica diaria para sumar días a tu racha de estudio. ¡No te rindas!",
                         iconRes = R.drawable.ic_flame
                     )
-                    4 -> TutorialPage(
+                    5 -> TutorialPage(
                         title = "Botón de Actualizaciones",
                         description = "En la parte superior derecha de la pantalla, aparecerá un símbolo que al seleccionar te mencionará todas las actualizaciones de la última versión.",
                         iconRes = R.drawable.ic_warning_update
@@ -84,7 +91,6 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Cambia el repeat(3) por esto:
                 repeat(pagerState.pageCount) { iteration ->
                     val color = if (pagerState.currentPage == iteration) {
                         MaterialTheme.colorScheme.primary
@@ -110,7 +116,8 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
                     .height(56.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
-                val buttonText = if (pagerState.currentPage == 4) "¡Empezar a jugar!" else "Omitir tutorial"
+                // Corregido a 5 para que coincida con la última página
+                val buttonText = if (pagerState.currentPage == 5) "¡Empezar a jugar!" else "Omitir tutorial"
                 Text(text = buttonText, style = MaterialTheme.typography.titleMedium)
             }
         }
@@ -119,6 +126,8 @@ fun TutorialCarousel(onDismiss: () -> Unit) {
 
 @Composable
 fun TutorialPage(title: String, description: String, iconRes: Int) {
+    val scrollState = rememberScrollState() // Estado del scroll
+
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -129,7 +138,9 @@ fun TutorialPage(title: String, description: String, iconRes: Int) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier
+                .verticalScroll(scrollState) // <-- Scroll agregado aquí
+                .padding(32.dp)
         ) {
             Icon(
                 painter = painterResource(id = iconRes),

@@ -11,6 +11,8 @@ import io.github.nyasanchez.lexi.data.vocabulary.LocalVocabularyRepository
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLanguage
 import io.github.nyasanchez.lexi.domain.level.LevelRules
 import io.github.nyasanchez.lexi.domain.level.LevelStatus
+import io.github.nyasanchez.lexi.domain.review.ReviewItem
+import io.github.nyasanchez.lexi.domain.review.ReviewRules
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,6 +58,15 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
                 LevelRules.statuses(catalog, wonIds)
             }
         }
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+
+    /**
+     * Palabras perdidas que todavía no se han acertado en ese modo, para Repaso. Al acertar una (en Repaso o en la
+     * práctica normal) se guarda como partida ganada: sale de esta lista y suma en `levels` sin más cambios.
+     * Vale null mientras se lee la base de datos.
+     */
+    val review: StateFlow<List<ReviewItem>?> = repository.observeReviewEntries()
+        .map { ReviewRules.items(catalog, it) }
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
 

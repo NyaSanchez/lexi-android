@@ -365,8 +365,9 @@ fun UpdateNoticeDialog(onDismiss: () -> Unit) {
 
                 // Lista de cambios
                 BulletPoint("Nuevos Niveles de Vocabulario organizados por dificultad (A1, A2, B1, etc.).")
-                BulletPoint("Tutorial interactivo paso a paso para nuevos usuarios o cuando se regresa al juego.")
+                BulletPoint("Tutorial interactivo paso a paso para nuevos usuarios o para usuarios que vuelven a jugar.")
                 BulletPoint("Ya no se escribe en un cuadro de texto, si no, directamente en los cuadros.")
+                BulletPoint("Se habilitó la zona de repasos, ahora podrás volver a intentarlo.")
             }
         },
         confirmButton = {
