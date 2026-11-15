@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Borde dentado del emblema -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M12,2L9.57,4.06 6.5,3.61 5.37,6.48 2.5,7.74 3.42,10.66 1.6,13.2 3.65,15.62 3.2,18.7 6.07,19.82 7.33,22.7 10.25,21.78 12.79,23.6 15.21,21.54 18.28,21.99 19.41,19.12 22.28,17.86 21.36,14.94 23.18,12.4 21.13,9.98 21.58,6.9 18.71,5.78 17.45,2.9 14.53,3.82zM12,18c-3.31,0 -6,-2.69 -6,-6s2.69,-6 6,-6 6,2.69 6,6 -2.69,6 -6,6z"/>
+    <!-- Estrella interior -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M12,8l-1.22,2.48 -2.78,0.4 2,1.96 -0.47,2.76 2.47,-1.3 2.47,1.3 -0.47,-2.76 2,-1.96 -2.78,-0.4z"/>
+</vector>

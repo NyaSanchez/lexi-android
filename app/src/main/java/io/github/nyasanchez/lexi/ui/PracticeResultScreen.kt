@@ -2,6 +2,7 @@ package io.github.nyasanchez.lexi.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,8 +61,8 @@ import java.util.Locale
 @Composable
 internal fun PracticeResultScreen(
     state: GameState,
-    position: Int,
-    total: Int,
+    position: Int?,
+    total: Int?,
     onNext: () -> Unit,
     onGoBack: () -> Unit,
     saveStatus: SaveStatus = SaveStatus.IDLE,
@@ -69,6 +70,7 @@ internal fun PracticeResultScreen(
     levelStatus: LevelStatus? = null,
     nextLevel: VocabularyLevel? = null,
     onSwitchLevel: (VocabularyLevel) -> Unit = {},
+    @StringRes backLabel: Int = R.string.back_home,
 ) {
     require(state.status != GameStatus.IN_PROGRESS)
     val solution = requireNotNull(state.solution)
@@ -84,10 +86,12 @@ internal fun PracticeResultScreen(
             item(key = "header") {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onGoBack, enabled = saveStatus != SaveStatus.SAVING) {
-                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.back_home))
+                        Icon(painterResource(R.drawable.ic_arrow_back), stringResource(backLabel))
                     }
                     Box(Modifier.weight(1f)) { LexiBrand() }
-                    Text(stringResource(R.string.word_position, position, total), style = MaterialTheme.typography.labelLarge)
+                    if (position != null && total != null) {
+                        Text(stringResource(R.string.word_position, position, total), style = MaterialTheme.typography.labelLarge)
+                    }
                 }
             }
             if (saveStatus != SaveStatus.IDLE) {
@@ -200,7 +204,7 @@ internal fun PracticeResultScreen(
                         Icon(painterResource(R.drawable.ic_arrow_forward), contentDescription = null)
                     }
                     TextButton(onClick = onGoBack, enabled = saveStatus != SaveStatus.SAVING, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.back_home))
+                        Text(stringResource(backLabel))
                     }
                 }
             }

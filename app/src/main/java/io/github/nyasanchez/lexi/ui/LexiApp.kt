@@ -34,8 +34,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.nyasanchez.lexi.R
 import io.github.nyasanchez.lexi.data.vocabulary.VocabularyLevel
+import io.github.nyasanchez.lexi.domain.review.ReviewItem
 
 private const val PRACTICE_ROUTE = "practice/{mode}/{level}"
+private const val REVIEW_PRACTICE_ROUTE = "review/{mode}/{entryId}"
+
+private fun reviewPracticeRoute(item: ReviewItem): String =
+    "review/${PracticeMode.forAnswerLanguage(item.answerLanguage).id}/${item.entry.id}"
 
 private enum class MainDestination(
     val route: String,
@@ -43,7 +48,7 @@ private enum class MainDestination(
     @param:DrawableRes val icon: Int,
 ) {
     HOME("home", R.string.nav_home, R.drawable.ic_home),
-    REVIEW("review", R.string.nav_review, R.drawable.ic_book),
+    REVIEW("review", R.string.nav_review, R.drawable.ic_review),
     PROGRESS("progress", R.string.nav_progress, R.drawable.ic_progress),
     CONTRIBUTORS("contributors", R.string.nav_contributors, R.drawable.ic_person)
 }
@@ -55,6 +60,7 @@ fun LexiApp() {
     val currentSave by progressModel.save.collectAsStateWithLifecycle()
     val currentStreakState by progressModel.streak.collectAsStateWithLifecycle()
     val levelStatuses by progressModel.levels.collectAsStateWithLifecycle()
+    val reviewItems by progressModel.review.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: MainDestination.HOME.route
@@ -130,13 +136,49 @@ fun LexiApp() {
                 )
             }
             composable(MainDestination.REVIEW.route) {
-                ReviewScreen(onGoHome = ::goHome)
+                ReviewScreen(
+                    pending = reviewItems,
+                    onRetryWord = { item ->
+                        navController.navigate(reviewPracticeRoute(item)) { launchSingleTop = true }
+                    },
+                    onGoHome = ::goHome,
+                )
             }
             composable(MainDestination.PROGRESS.route) {
                 ProgressScreen(state = progress, streak = currentStreakState.count, onRetry = progressModel::reload, onGoHome = ::goHome)
             }
             composable(MainDestination.CONTRIBUTORS.route) {
                 ContributorsScreen()
+            }
+            composable(
+                route = REVIEW_PRACTICE_ROUTE,
+                arguments = listOf(
+                    navArgument("mode") { type = NavType.StringType },
+                    navArgument("entryId") { type = NavType.StringType },
+                ),
+            ) { entry ->
+                val reviewMode = PracticeMode.fromId(entry.arguments?.getString("mode"))
+                val reviewEntryId = entry.arguments?.getString("entryId").orEmpty()
+                ReviewPracticeScreen(
+                    mode = reviewMode,
+                    entryId = reviewEntryId,
+                    onNextWord = {
+                        // Otra palabra pendiente, si la hay; si no, se vuelve a la lista de Repaso.
+                        val next = reviewItems.orEmpty().firstOrNull {
+                            !(it.entry.id == reviewEntryId && it.answerLanguage == reviewMode.answerLanguage)
+                        }
+                        if (next == null) {
+                            navController.popBackStack()
+                        } else {
+                            navController.navigate(reviewPracticeRoute(next)) {
+                                popUpTo(REVIEW_PRACTICE_ROUTE) { inclusive = true }
+                            }
+                        }
+                    },
+                    onGoBack = { navController.popBackStack() },
+                    saveState = currentSave,
+                    onSave = progressModel::save,
+                )
             }
             composable(
                 route = PRACTICE_ROUTE,

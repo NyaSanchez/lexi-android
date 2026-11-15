@@ -48,4 +48,19 @@ interface ProgressDao {
     /** Palabras acertadas al menos una vez, con el idioma en que se respondió (el modo). Solo una consulta: no cambia el esquema. */
     @Query("SELECT DISTINCT entryId, answerLanguage FROM completed_games WHERE won = 1")
     fun observeWonEntries(): Flow<List<WonEntry>>
+
+    /**
+     * Palabras que se perdieron y todavía no se han acertado en ese mismo modo, las perdidas más recientes primero.
+     * En cuanto se acierta la palabra (en Repaso o en la práctica normal) deja de aparecer. No cambia el esquema.
+     */
+    @Query(
+        """
+        SELECT entryId, answerLanguage, MAX(completedAt) AS lastLostAt
+        FROM completed_games
+        GROUP BY entryId, answerLanguage
+        HAVING MAX(won) = 0
+        ORDER BY lastLostAt DESC, entryId ASC
+    """
+    )
+    fun observeReviewEntries(): Flow<List<ReviewEntry>>
 }

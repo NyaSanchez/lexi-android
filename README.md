@@ -12,7 +12,7 @@ Aplicación nativa para Android que permite practicar vocabulario y escritura en
 
 Aplicación Android con Kotlin y Jetpack Compose. Incluye Inicio, selección de los dos modos de práctica y navegación entre Inicio, Repaso y Progreso, con tema claro y oscuro.
 
-La selección del modo se conserva al navegar y al recrearse la actividad. "Empezar" abre la práctica con el idioma seleccionado, respetando el nivel actual de la persona. Progreso muestra los resultados guardados; Repaso todavía conserva su estado inicial.
+La selección del modo se conserva al navegar y al recrearse la actividad. "Empezar" abre la práctica con el idioma seleccionado, respetando el nivel actual de la persona. Progreso muestra los resultados guardados; Repaso reúne las palabras perdidas y permite volver a intentarlas.
 
 El banco local contiene el vocabulario clasificado en niveles de dificultad (A1, A2, B1, etc.). La pantalla de práctica ya utiliza ese catálogo y el motor de partida: muestra la definición, un tablero visual interactivo y un campo nativo adaptado para ingresar letras mediante el teclado del dispositivo, bloqueando selectores de texto no deseados.
 
@@ -20,7 +20,7 @@ Cada envío válido revela pistas con colores, símbolos y descripciones para le
 
 Las partidas terminadas se guardan en una base de datos local de Room. Progreso muestra el total de partidas, aciertos, derrotas, palabras distintas acertadas y los últimos 20 resultados. Un identificador único impide duplicar una partida al recuperar la pantalla. La vista de resultado confirma cuándo quedó guardada y permite reintentar si falla.
 
-La selección de palabras sigue el orden del catálogo correspondiente al nivel. La práctica conserva la continuación por modo y nivel. La racha se calcula a partir de las partidas ganadas; Repaso mantiene su estado inicial. El historial guardado permanece al cerrar la app.
+La selección de palabras sigue el orden del catálogo correspondiente al nivel. La práctica conserva la continuación por modo y nivel. La racha se calcula a partir de las partidas ganadas. En Repaso aparecen las palabras en las que se agotaron los intentos y que aún no se han acertado en ese modo; al acertarlas en un reintento cuentan para el nivel que les corresponde en Inicio. El historial guardado permanece al cerrar la app.
 
 La aplicación cuenta con una publicación inicial y una actualización en prueba cerrada de Google Play. El expediente de la Entrega 2 documenta sus versiones y la evidencia disponible.
 
@@ -107,6 +107,7 @@ AGP 9 incorpora el soporte de Kotlin. Las dependencias se centralizan en `gradle
 - [Partida en el teléfono](docs/PARTIDA.md): tablero, teclado y recuperación del estado.
 - [Resultado y aprendizaje](docs/RESULTADO_APRENDIZAJE.md): ejemplos bilingües y revisión de intentos.
 - [Guardado de progreso](docs/GUARDADO_PROGRESO.md): persistencia, contadores, errores y comprobación del avance actual.
+- [Repaso](docs/REPASO.md): palabras perdidas, reintento y cómo cuentan para el nivel.
 
 ## Referencia de diseño
 

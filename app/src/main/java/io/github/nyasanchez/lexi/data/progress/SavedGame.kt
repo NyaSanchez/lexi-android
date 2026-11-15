@@ -53,4 +53,10 @@ data class ProgressSummary(val total: Long, val wins: Long, val losses: Long, va
 
 /** Una palabra acertada en un modo: `answerLanguage` es el nombre de VocabularyLanguage. */
 data class WonEntry(val entryId: String, val answerLanguage: String)
+
+/**
+ * Palabra pendiente de repaso en un modo: se perdió al menos una vez y nunca se ha acertado en ese mismo modo.
+ * `lastLostAt` es el instante de la última partida perdida.
+ */
+data class ReviewEntry(val entryId: String, val answerLanguage: String, val lastLostAt: Long)
 data class ProgressSnapshot(val summary: ProgressSummary, val recent: List<SavedGame>)

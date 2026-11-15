@@ -21,5 +21,9 @@ enum class PracticeMode(
 
     companion object {
         fun fromId(id: String?): PracticeMode = entries.firstOrNull { it.id == id } ?: ENGLISH
+
+        /** El modo en el que se responde en ese idioma; lo usa Repaso para reabrir una palabra en su modo original. */
+        fun forAnswerLanguage(language: VocabularyLanguage): PracticeMode =
+            entries.first { it.answerLanguage == language }
     }
 }
