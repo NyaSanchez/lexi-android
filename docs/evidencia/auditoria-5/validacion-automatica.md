@@ -59,6 +59,6 @@ Se verificó que los colores medidos en las 22 combinaciones de `contraste.csv` 
 
 Los resultados anteriores de 71 pruebas y Lint sin errores correspondían a una compilación experimental que incluía cambios y una prueba unitaria adicional. No describen la base auditada; este registro los sustituye para el PR documental.
 
-Las observaciones manuales del tutorial y la edición con TalkBack también se obtuvieron de una compilación experimental. Se conservan en el apartado 5.1 del informe, diferenciadas de los casos pendientes sobre la base.
+Las observaciones iniciales sobre una compilación experimental se conservan en el apartado 5.2 del informe y no se atribuyen a la base auditada. Posteriormente, Zyanya Sanchez realizó las comprobaciones de la versión original registradas en la matriz A-01…A-06: se documentan los fallos de TalkBack, el video de A-01 y los resultados escritos de legibilidad, entradas inválidas, tildes y la muestra bilingüe `bird`. Cada caso indica su cobertura y sus límites; estos registros manuales no son resultados de pruebas instrumentadas.
 
 La compilación de los APK de pruebas no implica que los casos instrumentados hayan sido ejecutados. No se publicó una versión de Google Play como parte de esta auditoría.
