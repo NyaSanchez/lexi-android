@@ -1,0 +1,23 @@
+tema,uso,texto_o_icono_hex,fondo_hex,razon,minimo,resultado
+Claro,Botón principal,FFFFFF,6D28D9,7.10,4.5,Cumple
+Claro,Tarjeta y casilla seleccionada,32106A,F0E7FF,12.40,4.5,Cumple
+Claro,Texto principal,1B1B35,FAF8FF,15.89,4.5,Cumple
+Claro,Texto de superficie,1B1B35,FAF8FF,15.89,4.5,Cumple
+Claro,Texto secundario,565269,FAF8FF,7.10,4.5,Cumple
+Claro,"Marca, enlaces y navegación",6D28D9,FAF8FF,6.74,4.5,Cumple
+Claro,Icono seleccionado,6D28D9,F0E7FF,5.95,4.5,Cumple
+Claro,Borde activo,6D28D9,FAF8FF,6.74,3.0,Cumple
+Oscuro,Botón principal,3A086C,CBB2FF,7.93,4.5,Cumple
+Oscuro,Tarjeta y casilla seleccionada,EBDCFF,302043,11.47,4.5,Cumple
+Oscuro,Texto principal,F1EAFB,16121F,15.70,4.5,Cumple
+Oscuro,Texto de superficie,F1EAFB,16121F,15.70,4.5,Cumple
+Oscuro,Texto secundario,CAC2D9,16121F,10.72,4.5,Cumple
+Oscuro,"Marca, enlaces y navegación",CBB2FF,16121F,9.95,4.5,Cumple
+Oscuro,Icono seleccionado,CBB2FF,302043,8.03,4.5,Cumple
+Oscuro,Borde activo,CBB2FF,16121F,9.95,3.0,Cumple
+Claro,Casilla CORRECT,14532D,DCFCE7,8.30,4.5,Cumple
+Oscuro,Casilla CORRECT,B9F6D0,123C2B,10.05,4.5,Cumple
+Claro,Casilla PRESENT,78350F,FEF3C7,8.15,4.5,Cumple
+Oscuro,Casilla PRESENT,FFE29A,4A3509,9.20,4.5,Cumple
+Claro,Casilla ABSENT,991B1B,FEE2E2,6.80,4.5,Cumple
+Oscuro,Casilla ABSENT,FFCDD2,4D2024,9.64,4.5,Cumple
