@@ -4,6 +4,9 @@ Aplicación nativa para Android que permite practicar vocabulario y escritura en
 
 **¿Te incorporas al equipo?** Empieza por la [guía de incorporación y contexto](docs/GUIA_EQUIPO.md): acceso, instalación, estado actual, arquitectura, pendientes, pruebas y trabajo con ramas y commits.
 
+
+La [auditoría de vocabulario y accesibilidad](docs/auditoria-vocabulario-accesibilidad.md) registra los hallazgos del issue #5, las recomendaciones y el estado de sus pruebas; no incorpora correcciones al código.
+
 ## Documentación Segunda Entrega:
 
 [Link directo a la documentación](docs/evidencia/entrega-2/README.md)
